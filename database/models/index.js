@@ -1,6 +1,8 @@
 import User from "./user";
+import UserHistory from "./user-history";
 
 const models = {
+  UserHistory,
   User,
 };
 
@@ -11,4 +13,4 @@ Object.keys(models).forEach((modelName) => {
   }
 });
 
-export { User };
+export { User, UserHistory };

@@ -10,8 +10,8 @@ export default function Logo({ isCollapsed }) {
                 alt="DomoDaily Logo"
                 w={
                     isCollapsed 
-                    ? { base: "20px", md: "20px", lg: "30px", xl: "40px" } // Ukuran lebih kecil saat collapsed
-                    : { base: "40px", md: "40px", lg: "50px", xl: "250px" } // Ukuran normal saat tidak collapsed
+                    ? { base: "20px", md: "20px", lg: "100px", xl: "40px" } // Ukuran lebih kecil saat collapsed
+                    : { base: "100px", md: "120px", lg: "180px", xl: "200px" } // Ukuran normal saat tidak collapsed
                 }
                 transition="all 0.3s ease-in-out" // Tambahkan transisi animasi yang halus
             />

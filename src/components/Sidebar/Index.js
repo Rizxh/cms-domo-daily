@@ -449,8 +449,8 @@ export default function Sidebar({ children }) {
         {(() => {
           const navLinks = {
             "Super Admin": [
-              { href: "/admin/article", label: "Membership Request", icon: "/icons/article.png" },
-              { href: "/admin/media", label: "Member", icon: "/icons/media.png" },
+              { href: "/admin/article", label: "Article", icon: "/icons/article.png" },
+              { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
               { href: "/admin/user", label: "User", icon: "/icons/user.png" },
               { href: "/admin/history", label: "History", icon: "/icons/history.png" },
             ],

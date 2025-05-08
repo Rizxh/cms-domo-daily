@@ -18,14 +18,14 @@ export const NavLink = ({ icon, isActive, label, isImage, ...rest }) => {
                 bg: "#EB1C23",
                 color: mode("white", "white"),
                 '& img': {
-                    filter: 'brightness(100)'
+                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
                 }
             }}
             {...rest}
         >
             <HStack spacing={4}>
                 {isImage ? (
-                    <Image src={icon} boxSize="20px" />
+                    <Image src={icon} boxSize="25px" />
                 ) : (
                     <Icon as={icon} boxSize="30px" />
                 )}

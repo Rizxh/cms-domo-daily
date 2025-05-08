@@ -1,5 +1,5 @@
-import { User, UserLog } from "database/models";
-import { apiHandler } from "helpers/api";
+import { User, UserHistory } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 var moment = require("moment");
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
@@ -37,7 +37,7 @@ async function handler(req, res) {
         
                 if (user) {
                   const now = dayjs();
-                  await UserLog.create({
+                  await UserHistory.create({
                     uuid: uuidv4(),
                     timestamps: now.format("YYYY-MM-DD HH:mm:ss"),
                     username: user.name,

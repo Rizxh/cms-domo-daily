@@ -1,5 +1,5 @@
-import { User, UserLog } from "database/models";
-import { apiHandler } from "helpers/api";
+import { User, UserHistory } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 import { v4 as uuidv4 } from "uuid";
 var moment = require("moment");
 var bcrypt = require("bcryptjs");
@@ -36,7 +36,7 @@ async function handler(req, res) {
           where: { uuid: req.body.user_id },
         });
   
-      await UserLog.create({
+      await UserHistory.create({
         uuid: uuidv4(),
         timestamps: now.format("YYYY-MM-DD HH:mm:ss"),
         username: user.name,

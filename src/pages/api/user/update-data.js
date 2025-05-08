@@ -1,4 +1,5 @@
-import { User, UserLog } from "database/models";
+import { User, UserHistory } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 import { IncomingForm } from "formidable";
 import { apiHandler } from "helpers/api";
 import moment from "moment";
@@ -68,7 +69,7 @@ async function updateUser(req, res) {
           where: { uuid: fields.user_id },
         });
   
-      await UserLog.create({
+      await UserHistory.create({
         uuid: uuidv4(),
         timestamps: now.format("YYYY-MM-DD HH:mm:ss"),
         username: user.name,

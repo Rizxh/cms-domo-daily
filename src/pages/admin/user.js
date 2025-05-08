@@ -299,7 +299,7 @@ export default function User() {
                                             value={role} onChange={(e) => setRole(e.target.value)}
                                         >
                                             <option value='Admin'>Admin</option>
-                                            <option value='Media'>Media</option>
+                                            <option value='Copywriter'>Copywriter</option>
                                         </Select>
                                         <FormErrorMessage>Enter e-mail!</FormErrorMessage>
                                     </FormControl>

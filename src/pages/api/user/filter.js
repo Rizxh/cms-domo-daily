@@ -1,4 +1,5 @@
-import { User } from "database/models";
+import { User } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 
 const { Op } = require("sequelize");
 
