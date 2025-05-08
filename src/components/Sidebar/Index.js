@@ -41,14 +41,14 @@ export default function Sidebar({ children }) {
   const LinkComponent = () => {
     return (
       <>
-        <Link href="/admin/banner" _hover={{
+        <Link href="/admin/article" _hover={{
           textDecoration: 'none',
         }}>
           <NavLink
-            label={isCollapsed ? "" : "Banner"}
-            icon="/icons/banner.png"
+            label={isCollapsed ? "" : "Article"}
+            icon="/icons/article.png"
             isImage={true}
-            aria-current={router.pathname == "/admin/banner" ? "page" : undefined}
+            aria-current={router.pathname == "/admin/article" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
               color: '#CB1517',
@@ -60,14 +60,15 @@ export default function Sidebar({ children }) {
             }}
           />
         </Link>
-        <Link href="/admin/sponsor" _hover={{
+
+        <Link href="/admin/media" _hover={{
           textDecoration: 'none',
         }}>
           <NavLink
-            label={isCollapsed ? "" : "Sponsor"}
-            icon="/icons/sponsor.png"
+            label={isCollapsed ? "" : "Media"}
+            icon="/icons/media.png"
             isImage={true}
-            aria-current={router.pathname == "/admin/sponsor" ? "page" : undefined}
+            aria-current={router.pathname == "/admin/media" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
               color: '#CB1517',
@@ -79,91 +80,37 @@ export default function Sidebar({ children }) {
             }}
           />
         </Link>
-        <Link href="/admin/news" _hover={{
-          textDecoration: 'none',
-        }}>
-          <NavLink
-            label={isCollapsed ? "" : "News"}
-            icon="/icons/news.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/news" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#CB1517',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
-        <Link href="/admin/video" _hover={{
-          textDecoration: 'none',
-        }}>
-          <NavLink
-            label={isCollapsed ? "" : "Video"}
-            icon="/icons/video.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/video" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#CB1517',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
-        <Link href="/admin/member" _hover={{
-          textDecoration: 'none',
-        }}>
-          <NavLink
-            label={isCollapsed ? "" : "Member"}
-            icon="/icons/member.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/member" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#CB1517',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
-        <Link href="/admin/message" _hover={{
-          textDecoration: 'none',
-        }}>
-          <NavLink
-            label={isCollapsed ? "" : "Message"}
-            icon="/icons/message.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/message" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#CB1517',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
-        <Link href="/admin/membership-request" _hover={{
+
+        <Link href="/admin/user" _hover={{
           textDecoration: 'none',
         }}
         >
           <NavLink
-            label={isCollapsed ? "" : "Membership Request"}
-            icon="/icons/membership-request.png"
+            label={isCollapsed ? "" : "User"}
+            icon="/icons/user.png"
             isImage={true}
-            aria-current={router.pathname == "/admin/membership-request" ? "page" : undefined}
+            aria-current={router.pathname == "/admin/user" ? "page" : undefined}
+            showLabel={!isCollapsed}
+            _hover={{
+              color: '#CB1517',
+              textDecoration: 'none',
+              transition: 'none',
+              '& img': {
+                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+              }
+            }}
+          />
+        </Link>
+
+        <Link href="/admin/history" _hover={{
+          textDecoration: 'none',
+        }}
+        >
+          <NavLink
+            label={isCollapsed ? "" : "History"}
+            icon="/icons/history.png"
+            isImage={true}
+            aria-current={router.pathname == "/admin/history" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
               color: '#CB1517',

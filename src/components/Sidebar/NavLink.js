@@ -27,9 +27,9 @@ export const NavLink = ({ icon, isActive, label, isImage, ...rest }) => {
                 {isImage ? (
                     <Image src={icon} boxSize="20px" />
                 ) : (
-                    <Icon as={icon} boxSize="20px" />
+                    <Icon as={icon} boxSize="30px" />
                 )}
-                <Text as="span" fontSize={{ base: "xs", lg: "sm" }}>
+                <Text as="span" fontSize={{ base: "xs", lg: "md" }}>
                     {label}
                 </Text>
             </HStack>

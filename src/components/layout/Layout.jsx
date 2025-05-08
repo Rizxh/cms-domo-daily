@@ -6,7 +6,7 @@ export default function Layout({ children }) {
         <>
             <Head>
                 <title>Dashboard Domo Daily</title>
-                <link rel="icon" href="/next.svg" type="image/x-icon" />
+                <link rel="icon" href="/domo-icon.svg" type="image/x-icon" />
             </Head>
             <Sidebar>
                 <main>{children}</main>
