@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { alertService, userService } from '../../services'
+import { alertService, userService } from '../../../services'
 
 export default function Login() {
   const router = useRouter()
