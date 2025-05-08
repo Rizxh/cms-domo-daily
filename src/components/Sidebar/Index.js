@@ -455,8 +455,8 @@ export default function Sidebar({ children }) {
               { href: "/admin/history", label: "History", icon: "/icons/history.png" },
             ],
             "Admin": [
-              {href: "/admin/article", label: "Membership Request", icon: "/icons/article.png" },
-              { href: "/admin/media", label: "Member", icon: "/icons/media.png" },
+              {href: "/admin/article", label: "Article", icon: "/icons/article.png" },
+              { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
               { href: "/admin/history", label: "History", icon: "/icons/history.png" },
             ],
             "Copywriter": [
