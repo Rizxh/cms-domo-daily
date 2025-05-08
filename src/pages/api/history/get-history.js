@@ -1,5 +1,5 @@
-import { UserLog } from "database/models";
-import { apiHandler } from "helpers/api";
+import { UserHistory } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 
 const { Op } = require("sequelize");
 
@@ -18,38 +18,38 @@ async function handler(req, res) {
     try {
       const keywordsCondition = req.query.keywords
         ? {
-            [Op.or]: [
-              {
-                timestamps: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+          [Op.or]: [
+            {
+              timestamps: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                username: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              username: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                activity: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              activity: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                environment: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              environment: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                description: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              description: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-            ],
-          }
+            },
+          ],
+        }
         : {};
 
       const offset = (page - 1) * limit;
-      const findLogs = await UserLog.findAndCountAll({
+      const findLogs = await UserHistory.findAndCountAll({
         where: {
           ...keywordsCondition,
         },

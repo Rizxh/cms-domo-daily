@@ -17,15 +17,14 @@ async function handler(req, res) {
     try {
       var now = moment().local();
 
-      // Hash password sebelum disimpan
-      const saltRounds = 10; // Tentukan jumlah salt rounds
+      const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
 
       const createUser = await User.create({
         uuid: uuidv4(),
         name: req.body.name,
         email: req.body.email,
-        password: hashedPassword, // Simpan password yang sudah di-hash
+        password: hashedPassword,
         role: req.body.role,
         created_at: now.format("YYYY-MM-DD HH:mm"),
         updated_at: now.format("YYYY-MM-DD HH:mm"),
