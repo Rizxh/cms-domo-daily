@@ -15,7 +15,7 @@ export const NavLink = ({ icon, isActive, label, isImage, ...rest }) => {
                 color: 'white',
             }}
             _activeLink={{
-                bg: "#CB1517",
+                bg: "#EB1C23",
                 color: mode("white", "white"),
                 '& img': {
                     filter: 'brightness(100)'

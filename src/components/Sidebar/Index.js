@@ -51,11 +51,11 @@ export default function Sidebar({ children }) {
             aria-current={router.pathname == "/admin/article" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
-              color: '#CB1517',
+              color: '#EB1C23',
               textDecoration: 'none',
               transition: 'none',
               '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+                filter: 'invert(0%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
               }
             }}
           />
@@ -71,7 +71,7 @@ export default function Sidebar({ children }) {
             aria-current={router.pathname == "/admin/media" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
-              color: '#CB1517',
+              color: '#EB1C23',
               textDecoration: 'none',
               transition: 'none',
               '& img': {
@@ -92,7 +92,7 @@ export default function Sidebar({ children }) {
             aria-current={router.pathname == "/admin/user" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
-              color: '#CB1517',
+              color: '#EB1C23',
               textDecoration: 'none',
               transition: 'none',
               '& img': {
@@ -113,7 +113,7 @@ export default function Sidebar({ children }) {
             aria-current={router.pathname == "/admin/history" ? "page" : undefined}
             showLabel={!isCollapsed}
             _hover={{
-              color: '#CB1517',
+              color: '#EB1C23',
               textDecoration: 'none',
               transition: 'none',
               '& img': {
