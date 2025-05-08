@@ -1,7 +1,6 @@
 import { User, UserHistory } from "../../../../database/models";
 import { apiHandler } from "../../../../helpers/api";
 import { IncomingForm } from "formidable";
-import { apiHandler } from "helpers/api";
 import moment from "moment";
 var bcrypt = require("bcryptjs");
 import { v4 as uuidv4 } from "uuid";

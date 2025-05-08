@@ -5,8 +5,8 @@ import { MdOutlineModeEdit } from "react-icons/md";
 import { useRouter } from "next/router";
 import SweetAlert from "./SweetAlert";
 import { BiSolidTrashAlt } from "react-icons/bi";
-import { fetchWrapper } from "helpers";
-import { userService } from "services";
+import { fetchWrapper } from "../../helpers";
+import { userService } from "../../services";
 
 export default function TableCategory(props) {
     const router = useRouter();

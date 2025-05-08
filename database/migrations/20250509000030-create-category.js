@@ -32,31 +32,43 @@ module.exports = {
     await queryInterface.bulkInsert("tbl_category", [
       {
         uuid: uuid(),
-        category: "Racing",
+        category: "Motor",
         created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
         updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         uuid: uuid(),
-        category: "News",
+        category: "Mobil",
         created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
         updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         uuid: uuid(),
-        category: "Entertaiment",
+        category: "Solusi",
         created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
         updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         uuid: uuid(),
-        category: "Club",
+        category: "Berita",
         created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
         updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         uuid: uuid(),
-        category: "Event",
+        category: "Service AC",
+        created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
+        updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
+      },
+      {
+        uuid: uuid(),
+        category: "Rekomendasi",
+        created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
+        updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
+      },
+      {
+        uuid: uuid(),
+        category: "Fakta Baru",
         created_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
         updated_at: moment().local().format("YYYY-MM-DD HH:mm:ss"),
       },

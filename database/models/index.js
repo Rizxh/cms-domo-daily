@@ -1,7 +1,9 @@
+import Category from "./category";
 import User from "./user";
 import UserHistory from "./user-history";
 
 const models = {
+  Category,
   UserHistory,
   User,
 };
@@ -13,4 +15,4 @@ Object.keys(models).forEach((modelName) => {
   }
 });
 
-export { User, UserHistory };
+export { User, UserHistory, Category };
