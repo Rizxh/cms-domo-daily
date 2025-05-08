@@ -1,4 +1,7 @@
-import { errorHandler, jwtMiddleware } from "helpers/api";
+// import { errorHandler, jwtMiddleware } from "helpers/api";
+
+import { errorHandler } from "./error-handler";
+import { jwtMiddleware } from "./jwt-middleware";
 
 export { apiHandler };
 
