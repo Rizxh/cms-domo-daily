@@ -1,3 +1,4 @@
+import User from "@/pages/admin/user";
 import {
     Avatar,
     Box,
@@ -13,13 +14,11 @@ import {
     Text,
     useBreakpointValue,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { FiMoreVertical } from "react-icons/fi";
 import { userService } from "../../../services";
 
 export const UserProfile = (props) => {
-    const router = useRouter();
-    const { name, role, image, isCollapsed } = props;
+    const { user, isCollapsed } = props;
 
     const isMobile = useBreakpointValue({ base: true, xl: false });
 
@@ -43,14 +42,14 @@ export const UserProfile = (props) => {
                                         fontSize={{ base: "xs", lg: "sm" }}
                                         maxW="15vw"
                                     >
-                                        {name}
+                                        {user?.name || "Guest"}
                                     </Text>
                                     <Text
                                         textStyle="sm"
                                         color="fg.muted"
                                         fontSize={{ base: "xs", lg: "sm" }}
                                     >
-                                        {role}
+                                        {user?.role || "Anonymous"}
                                     </Text>
                                 </Box>
                             </>

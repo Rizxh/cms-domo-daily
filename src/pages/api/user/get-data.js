@@ -1,4 +1,6 @@
-import { User } from "database/models";
+
+import { User } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 const { Op } = require("sequelize");
 
 export default handler;
@@ -16,24 +18,24 @@ async function handler(req, res) {
     try {
       const keywordCondition = req.query.keywords
         ? {
-            [Op.or]: [
-              {
-                name: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+          [Op.or]: [
+            {
+              name: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                email: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              email: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                role: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              role: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-            ],
-          }
+            },
+          ],
+        }
         : {};
 
       const offset = (page - 1) * limit;

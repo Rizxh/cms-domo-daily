@@ -1,5 +1,5 @@
-import { User } from "database/models";
-import { apiHandler } from "helpers/api";
+import { User } from "../../../../database/models";
+import { apiHandler } from "../../../../helpers/api";
 
 export default apiHandler(handler);
 
@@ -14,20 +14,20 @@ async function handler(req, res) {
   async function getUser() {
     try {
       const { uuid } = req.body;
-  
+
       if (!uuid) {
         return res.status(400).json({
           success: false,
           message: "UUID is required",
         });
       }
-  
+
       const findUser = await User.findOne({
         where: {
           uuid: uuid,
         },
       });
-  
+
       if (findUser) {
         res.status(200).json({
           success: true,

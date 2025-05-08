@@ -9,7 +9,9 @@ import {
   VStack,
   useDisclosure,
   Image,
-  color
+  color,
+  Grid,
+  HStack
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -18,6 +20,8 @@ import { useRouter } from "next/router";
 import { UserProfile } from "./UserProfile";
 import Logo from "./Logo";
 import { NavLink } from "./NavLink";
+import { fetchWrapper } from "../../../helpers";
+import { userService } from "../../../services";
 
 // Import end
 
@@ -27,6 +31,7 @@ export default function Sidebar({ children }) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -35,93 +40,467 @@ export default function Sidebar({ children }) {
   useEffect(() => {
     if (router.isReady) {
       setIsLoading(false);
+      findUser()
     }
   }, [router]);
 
+  const findUser = async () => {
+    fetchWrapper
+      .post(`/api/user/get-current-user`, {
+        uuid: userService.userValue?.id,
+      })
+      .then((res) => {
+        const inputDataToast = "input-data-toast";
+        if (res.success) {
+          setCurrentUser(res.data);
+        }
+      });
+  };
+
   const LinkComponent = () => {
+    // if (userService?.userValue?.role === "Admin") {
+    //   return (
+    //     <>
+    //       <Link href="/admin/membership-request"
+    //         _hover={{
+    //           textDecoration: 'none',
+    //         }}
+    //       >
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Membership Request"}
+    //           icon="/icons/membership-request.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/membership-request" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/member" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Member"}
+    //           icon="/icons/member.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/member" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/message" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Message"}
+    //           icon="/icons/message.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/message" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/user" _hover={{
+    //         textDecoration: 'none',
+    //       }}
+    //       >
+    //         <NavLink
+    //           label={isCollapsed ? "" : "User"}
+    //           icon="/icons/user.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/user" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/log" _hover={{
+    //         textDecoration: 'none',
+    //       }}
+    //       >
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Log"}
+    //           icon="/icons/log.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/log" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //     </>
+    //   );
+    // } else if (userService?.userValue?.role === "Media") {
+    //   return (
+    //     <>
+    //       <Link href="/admin/message" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Message"}
+    //           icon="/icons/message.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/message" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/banner" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Banner"}
+    //           icon="/icons/banner.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/banner" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/sponsor" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Sponsor"}
+    //           icon="/icons/sponsor.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/sponsor" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/news" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "News"}
+    //           icon="/icons/news.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/news" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/post" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Post"}
+    //           icon="/icons/post.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/post" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //     </>
+    //   );
+    // } else {
+    //   return (
+    //     <>
+    //       <Link href="/admin/membership-request"
+    //         _hover={{
+    //           textDecoration: 'none',
+    //         }}
+    //       >
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Membership Request"}
+    //           icon="/icons/membership-request.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/membership-request" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/member" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Member"}
+    //           icon="/icons/member.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/member" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/message" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Message"}
+    //           icon="/icons/message.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/message" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/banner" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Banner"}
+    //           icon="/icons/banner.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/banner" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/sponsor" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Sponsor"}
+    //           icon="/icons/sponsor.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/sponsor" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/news" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "News"}
+    //           icon="/icons/news.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/news" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/post" _hover={{
+    //         textDecoration: 'none',
+    //       }}>
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Post"}
+    //           icon="/icons/post.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/post" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/user" _hover={{
+    //         textDecoration: 'none',
+    //       }}
+    //       >
+    //         <NavLink
+    //           label={isCollapsed ? "" : "User"}
+    //           icon="/icons/user.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/user" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //       <Link href="/admin/log" _hover={{
+    //         textDecoration: 'none',
+    //       }}
+    //       >
+    //         <NavLink
+    //           label={isCollapsed ? "" : "Log"}
+    //           icon="/icons/log.png"
+    //           isImage={true}
+    //           aria-current={router.pathname == "/admin/log" ? "page" : undefined}
+    //           showLabel={!isCollapsed}
+    //           _hover={{
+    //             color: '#CB1517',
+    //             textDecoration: 'none',
+    //             transition: 'none',
+    //             '& img': {
+    //               filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+    //             }
+    //           }}
+    //         />
+    //       </Link>
+    //     </>
+    //   );
+    // }
+
     return (
       <>
-        <Link href="/admin/article" _hover={{
-          textDecoration: 'none',
-        }}>
-          <NavLink
-            label={isCollapsed ? "" : "Article"}
-            icon="/icons/article.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/article" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#EB1C23',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(0%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
+        {(() => {
+          const navLinks = {
+            "Super Admin": [
+              { href: "/admin/article", label: "Membership Request", icon: "/icons/article.png" },
+              { href: "/admin/media", label: "Member", icon: "/icons/media.png" },
+              { href: "/admin/user", label: "User", icon: "/icons/user.png" },
+              { href: "/admin/history", label: "History", icon: "/icons/history.png" },
+            ],
+            "Admin": [
+              {href: "/admin/article", label: "Membership Request", icon: "/icons/article.png" },
+              { href: "/admin/media", label: "Member", icon: "/icons/media.png" },
+              { href: "/admin/history", label: "History", icon: "/icons/history.png" },
+            ],
+            "Copywriter": [
+              {href: "/admin/article", label: "Membership Request", icon: "/icons/article.png" },
+              { href: "/admin/media", label: "Member", icon: "/icons/media.png" },
+            ],
+          };
 
-        <Link href="/admin/media" _hover={{
-          textDecoration: 'none',
-        }}>
-          <NavLink
-            label={isCollapsed ? "" : "Media"}
-            icon="/icons/media.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/media" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#EB1C23',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
+          const userRole = currentUser?.role;
+          if (!userRole || !navLinks[userRole]) return null;
 
-        <Link href="/admin/user" _hover={{
-          textDecoration: 'none',
-        }}
-        >
-          <NavLink
-            label={isCollapsed ? "" : "User"}
-            icon="/icons/user.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/user" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#EB1C23',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
+          return (
+            <>
+              {navLinks[userRole].map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.href}
+                  _hover={{
+                    textDecoration: 'none',
+                  }}
+                >
+                  <NavLink
+                    label={isCollapsed ? "" : link.label}
+                    icon={link.icon}
+                    isImage={true}
+                    aria-current={router.pathname === link.href ? "page" : undefined}
+                    showLabel={!isCollapsed}
+                    _hover={{
+                      color: '#CB1517',
+                      textDecoration: 'none',
+                      transition: 'none',
+                      '& img': {
+                        filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
+                      },
+                    }}
+                  />
+                </Link>
+              ))}
 
-        <Link href="/admin/history" _hover={{
-          textDecoration: 'none',
-        }}
-        >
-          <NavLink
-            label={isCollapsed ? "" : "History"}
-            icon="/icons/history.png"
-            isImage={true}
-            aria-current={router.pathname == "/admin/history" ? "page" : undefined}
-            showLabel={!isCollapsed}
-            _hover={{
-              color: '#EB1C23',
-              textDecoration: 'none',
-              transition: 'none',
-              '& img': {
-                filter: 'invert(27%) sepia(94%) saturate(7457%) hue-rotate(357deg) brightness(80%) contrast(106%)',
-              }
-            }}
-          />
-        </Link>
+            </>
+          );
+        })()}
+
+
       </>
     );
   };
@@ -145,30 +524,47 @@ export default function Sidebar({ children }) {
             transition={'0.5s ease-in-out'}
           >
             <Stack spacing="6">
-              <Flex justify="end" align="center">
-                <IconButton
-                  icon={isCollapsed ? <HamburgerIcon /> : <HamburgerIcon />}
-                  transition={"ease-in"}
-                  aria-label={"Toggle Sidebar"}
-                  onClick={toggleSidebar}
-                />
-              </Flex>
-              <Box display={isCollapsed ? "" : "block"} mb={'20px'}>
-                <Logo alignSelf="center" />
-              </Box>
+              {isCollapsed ?
+                <>
+                  <Flex justify="end" align="center" justifyContent="center">
+                    <IconButton
+                      icon={isCollapsed ? <HamburgerIcon /> : <HamburgerIcon />}
+                      transition={"ease-in"}
+                      aria-label={"Toggle Sidebar"}
+                      onClick={toggleSidebar}
+                    />
+                  </Flex>
+                  <Box display={isCollapsed ? "" : "block"} mb={'20px'}>
+                    <Logo alignSelf="center" />
+                  </Box></> :
+                <>
+                  <HStack justify="space-between" align="center">
+                    <Box w={"100%"} pl="40px">
+                      <Logo />
+                    </Box>
+                    <Box h={"100%"}>
+                      <IconButton
+                        icon={isCollapsed ? <HamburgerIcon /> : <HamburgerIcon />}
+                        transition={"ease-in"}
+                        aria-label={"Toggle Sidebar"}
+                        alignContent={"start"}
+                        onClick={toggleSidebar}
+                      />
+
+                    </Box>
+                  </HStack>
+                </>}
+
             </Stack>
 
             <Stack spacing={6}>
-              <Box h="60vh">
+              <Box h="60vh" overflowY="auto">
                 <Stack>
                   <LinkComponent />
                 </Stack>
               </Box>
             </Stack>
-            <UserProfile 
-              name="Domo Daily"
-              role="Admin" 
-              isCollapsed={isCollapsed} />
+            <UserProfile user={currentUser} isCollapsed={isCollapsed} />
           </Flex>
         </Flex>
         {/* End Sidebar Desktop */}
@@ -192,9 +588,9 @@ export default function Sidebar({ children }) {
                 <Center>
                   <Logo iconColor="blue.600" />
                 </Center>
-                <UserProfile 
-                  name="Ducati Owner Club Indonesia"
-                  role="Admin"/>
+                <UserProfile
+                  user={currentUser}
+                />
               </Flex>
               <Box
                 pb={4}
