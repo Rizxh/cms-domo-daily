@@ -72,7 +72,7 @@ async function saveMedia(req, res) {
       username: user.name,
       activity: "CREATE",
       environment: "Media Management",
-      description: `Created a new banner with title "${title}".`,
+      description: `Created a new media with title "${title}".`,
       created_at: now.format("YYYY-MM-DD HH:mm:ss"),
       updated_at: now.format("YYYY-MM-DD HH:mm:ss"),
     });

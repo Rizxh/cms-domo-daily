@@ -26,25 +26,25 @@ async function getMediaDetails(req, res) {
   }
 
   try {
-    const banner = await Media.findOne({
+    const media = await Media.findOne({
       where: {
         uuid: uuid
       }
     });
 
     // Jika Media tidak ditemukan
-    if (!banner) {
+    if (!media) {
       return res.status(404).json({
         success: false,
         message: "Media not found",
       });
     }
 
-    // Mengembalikan detail banner
+    // Mengembalikan detail media
     res.status(200).json({
       success: true,
       message: "Success",
-      data: banner,
+      data: media,
     });
   } catch (e) {
     // Menangani error jika terjadi

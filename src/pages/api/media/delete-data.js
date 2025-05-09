@@ -28,7 +28,7 @@ async function handler(req, res) {
         try {
           await fs.unlink(assetPath);
         } catch (err) {
-          console.error("Error deleting banner file:", err);
+          console.error("Error deleting media file:", err);
         }
 
         await Media.destroy({
@@ -49,7 +49,7 @@ async function handler(req, res) {
             username: user.name,
             activity: "DELETE",
             environment: "Media Management",
-            description: `Deleted banner on title "${findMedia.title}".`,
+            description: `Deleted media on title "${findMedia.title}".`,
             created_at: now.format("YYYY-MM-DD HH:mm:ss"),
             updated_at: now.format("YYYY-MM-DD HH:mm:ss"),
           });

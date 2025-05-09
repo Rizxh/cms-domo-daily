@@ -82,7 +82,7 @@ async function handler(req, res) {
             username: user.name,
             activity: "UPDATE",
             environment: "Media Management",
-            description: `Update a banner on title "${fields.title}, number ${fields.id}".`,
+            description: `Update a media on title "${fields.title}, number ${fields.id}".`,
             created_at: now.format("YYYY-MM-DD HH:mm:ss"),
             updated_at: now.format("YYYY-MM-DD HH:mm:ss"),
           });
