@@ -11,7 +11,7 @@ export const config = {
   },
 };
 
-import { apiHandler } from "helpers/api";
+import { apiHandler } from "../../../../helpers/api";
 
 export default apiHandler(handler);
 
@@ -41,7 +41,8 @@ async function saveArticle(req, res) {
 
     const title = fields.title[0];
     const status = fields.status[0];
-    const content = fields.content[0];
+    const description = fields.description[0];
+    const link = fields.link[0];
     const uuidCategory = fields.uuid_category[0];
     const uploadedBy = fields.uploaded_by[0];
     
@@ -62,7 +63,8 @@ async function saveArticle(req, res) {
       uuid_category: uuidCategory,
       asset: `/uploads/${newFilename}`,
       title: title,
-      content: content,
+      description: description,
+      link: link,
       uploaded_by: uploadedBy,
       status: status,
       created_at: now.format("YYYY-MM-DD HH:mm:ss"),

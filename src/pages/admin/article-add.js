@@ -16,14 +16,17 @@ import {
     VStack,
     useToast,
     Flex,
+    Select,
+    InputGroup,
+    InputLeftAddon,
+    InputRightAddon,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FiUpload } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { userService } from "../../../services";
-
-// PrimeReact Editor
+import { fetchWrapper } from "../../../helpers";
 import { Editor } from "primereact/editor";
 
 export default function ArticleAdd() {
@@ -31,47 +34,160 @@ export default function ArticleAdd() {
     const toast = useToast();
     const picRef = useRef();
 
-    const [filePicture, setFilePicture] = useState(null);
-    const [bannerAsset, setBannerAsset] = useState(null);
-    const [formData, setFormData] = useState({
-        title: "",
-        description: "",
-        category: "",
-        link: "",
-    });
+    const [articleAsset, setArticleAsset] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [status, setStatus] = useState("");
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    const [filePicture, setFilePicture] = useState(null);
+    const [picture, setPicture] = useState(null);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState("")
+    const [link, setLink] = useState("");
+    const [onSubmission, setOnSubmission] = useState(false);
+
+    const [editedTitle, setEditedTitle] = useState("");
+    const [editedCategory, setEditedCategory] = useState("");
+    const [editedDescription, setEditedDescription] = useState("");
+    const [editedFilePicture, setEditedFilePicture] = useState(null);
+    const [editedLink, setEditedLink] = useState(null);
+    const [editedPicture, setEditedPicture] = useState(null);
+    const [editedArticleUuid, setEditedArticleUuid] = useState(null);
+    const [editedOnSubmission, setEditedOnSubmission] = useState(false);
+    const [errorTooltip, setErrorTooltip] = useState(false);
+
+    const [limitData, setLimitData] = useState(() => {
+        return parseInt(localStorage.getItem("limitData") || 10);
+    });
+    const [filterText, setFilterText] = useState("");
+    const [filterStatus, setFilterStatus] = useState("All");
+
+    useEffect(() => {
+        getCategories(limitData, filterText);
+    }, []);
 
     const handleDescriptionChange = (value) => {
-        setFormData((prev) => ({ ...prev, description: value }));
-    };
+        setDescription(value);
+    }
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFilePicture(file);
-            const objectUrl = URL.createObjectURL(file);
-            setBannerAsset(objectUrl);
+    const handleSubmit = (statusShare) => {
+        if (title && category && filePicture) {
+            const now = new Date().toISOString();
+            setOnSubmission(true);
+            const formData = new FormData();
+            formData.append("user_id", userService.userValue.id)
+            formData.append("title", title);
+            formData.append("asset", filePicture);
+            formData.append("status", statusShare);
+            formData.append("link", link);
+            formData.append("description", description);
+            formData.append("uuid_category", category);
+            formData.append("uploaded_by", userService?.userValue.id);
+            if (statusShare === "Published") {
+                formData.append("created_at", now);
+            }
+
+            fetchWrapper.postForm(`/api/article/create-data`, formData).then((res) => {
+                if (res.success) {
+                    toast({ title: "Article created successfully", status: "success", duration: 3000, position: "top" });
+                    setTimeout(() => router.push("/admin/article"), 3000);
+                } else {
+                    toast({ title: res.message, status: "error", duration: 3000 });
+                }
+            });
+        } else {
+            setErrorTooltip(true);
+            toast({ title: "Please fill all fields!", status: "error", duration: 3000, position: "top" });
+            setTimeout(() => {
+                setErrorTooltip(false);
+            }, 3000);
         }
     };
 
-    const handleSubmit = () => {
-        toast({
-            title: "Submitted!",
-            description: "Your article has been saved (not really, this is just frontend).",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-        });
+    const onEditClicked = (articleUuid) => {
+        setEditedArticleUuid(articleUuid)
+        getArticleByUuid(articleUuid)
+    }
 
-        console.log({
-            ...formData,
-            asset: filePicture,
-        });
+    const onEditSubmit = async (statusShare) => {
+        if (editedTitle && editedCategory) {
+            setEditedOnSubmission(true);
+
+            const formData = new FormData();
+            formData.append("user_id", userService.userValue.id);
+            formData.append("uuid", editedArticleUuid);
+            formData.append("asset", editedFilePicture);
+            formData.append("title", editedTitle);
+            formData.append("uploaded_by", userService?.userValue.id);
+            formData.append("uuid_category", editedCategory);
+            formData.append("status", statusShare);
+            formData.append("description", editedDescription);
+            formData.append("link", editedLink);
+            if (statusShare === "Published") {
+                formData.append("created_at", new Date().toISOString());
+            }
+
+            fetchWrapper
+                .postForm(`/api/article/update-data`, formData)
+                .then((res) => {
+                    const toastId = "update-article-toast";
+                    if (res.success) {
+                        if (!toast.isActive(toastId)) {
+                            toast({
+                                id: toastId,
+                                title: "Article updated successfully.",
+                                status: "success",
+                                duration: 1500,
+                                isClosable: true,
+                                position: "top",
+                            });
+                        }
+                        setTimeout(() => router.reload(), 1500);
+                    } else {
+                        toast({
+                            title: res.message,
+                            status: "error",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "top",
+                        });
+                    }
+                })
+                .finally(() => setOnSubmission(false));
+        } else {
+            setErrorTooltip(true);
+            setTimeout(() => setErrorTooltip(false), 3000);
+        }
     };
+
+    const getArticleByUuid = async (uuid) => {
+        fetchWrapper
+            .get(`/api/article/get-data-details?uuid=${uuid}`)
+            .then((res) => {
+                if (res.success) {
+                    setEditedPicture(res.data.asset);
+                    setEditedTitle(res.data.title);
+                    setEditedDescription(res.data.content);
+                    setEditedCategory(res.data.uuid_category);
+                }
+            });
+    };
+
+    const getCategories = async () => {
+        fetchWrapper.get(`/api/category/get-data`).then((res) => {
+            if (res.success) {
+                setCategories(res.data);
+            } else {
+                toast({
+                    title: res.message,
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top",
+                })
+            }
+        })
+    }
 
     return (
         <VStack p={{ base: "4", xl: "8" }} align="stretch" minH="100vh" gap="5">
@@ -93,10 +209,11 @@ export default function ArticleAdd() {
                             </Button>
                             <Button
                                 colorScheme="red"
-                                onClick={handleSubmit}
+                                onClick={() => handleSubmit(status)}
                             >
                                 Create Article
                             </Button>
+
                         </Flex>
                     )}
             </HStack>
@@ -124,10 +241,15 @@ export default function ArticleAdd() {
                             accept="image/*"
                             ref={picRef}
                             style={{ display: "none" }}
-                            onChange={handleImageUpload}
+                            onChange={(article) => {
+                                let fileObj = article.target.files[0];
+                                setFilePicture(fileObj);
+                                const objectUrl = URL.createObjectURL(fileObj);
+                                setPicture(objectUrl);
+                            }}
                         />
-                        {bannerAsset ? (
-                            <Image src={bannerAsset} alt="Preview" w="100%" h="100%" objectFit="cover" borderRadius="md" />
+                        {picture ? (
+                            <Image src={picture} alt="Preview" w="100%" h="100%" objectFit="cover" borderRadius="md" />
                         ) : (
                             <VStack spacing="2" color="gray.500">
                                 <Icon as={FiUpload} boxSize={8} color="red.500" />
@@ -142,39 +264,56 @@ export default function ArticleAdd() {
                         <FormLabel>Title</FormLabel>
                         <Input
                             name="title"
-                            value={formData.title}
-                            onChange={handleChange}
+                            value={title}
                             placeholder="Enter article title"
+                            onChange={(e) => setTitle(e.target.value)}
                         />
                     </FormControl>
 
                     <FormControl>
-                        <FormLabel>Label</FormLabel>
-                        <Input
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            placeholder="Enter a tag or label"
-                        />
+                        <FormLabel>Category</FormLabel>
+                        <Select value={category} onChange={(e) => setCategory(e.target.value)} id="category" placeholder="Select category">
+                            {categories.map((data, index) => {
+                                return (
+                                    <option key={index} value={data.uuid}>
+                                        {data.category}
+                                    </option>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl>
+                        <FormLabel>Status</FormLabel>
+                        <Select
+                            placeholder="Choose article status"
+                            size={{ base: "sm", lg: "md" }}
+                            colorScheme="red"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)} // ← perbaikan di sini
+                        >
+                            <option value="Draft">Draft</option>
+                            <option value="Published">Published</option>
+                        </Select>
                     </FormControl>
 
                     <FormControl>
                         <FormLabel>Link</FormLabel>
-                        <Input
-                            name="link"
-                            value={formData.link}
-                            onChange={handleChange}
-                            placeholder="https://domodaily.com/post=7_Kesalahan_Pengguna_Baru_Mobil"
-                        />
+                        <InputGroup size='md' onChange={(e) => setLink(e.target.value)}>
+                            <InputLeftAddon>https://www.domodaily.com/</InputLeftAddon>
+                            <Input placeholder='mysite' />
+                        </InputGroup>
                     </FormControl>
 
                     <FormControl>
                         <FormLabel>Description</FormLabel>
                         <Box bg="white" border="1px solid #ccc" borderRadius="md" p={2}>
                             <Editor
-                                value={formData.description}
+                                value={description}
                                 onTextChange={(e) => handleDescriptionChange(e.htmlValue)}
                                 style={{ height: '320px' }}
+                                // onTextChange={(e) => setDescription(e.target.value)}
+                                placeholder="Enter article description"
                             />
                         </Box>
                     </FormControl>

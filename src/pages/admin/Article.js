@@ -11,6 +11,7 @@ import {
     SimpleGrid,
     Text,
     useBreakpointValue,
+    useToast,
     VStack,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
@@ -19,9 +20,11 @@ import { useEffect, useState } from "react";
 import TableArticle from "@/components/TableArticle";
 import { userService } from "../../../services";
 import { useRouter } from "next/router";
+import { fetchWrapper } from "../../../helpers";
 
 export default function ArticleRequest() {
     const router = useRouter()
+    const toast = useToast()
     const isMobile = useBreakpointValue({ base: true, md: false });
 
     const [limitData, setLimitData] = useState(() => {
@@ -33,10 +36,133 @@ export default function ArticleRequest() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalArticle, setTotalArticle] = useState(0);
     const [Article, setArticle] = useState([]);
+    const [errorTooltip, setErrorTooltip] = useState(false);
+
+    const [categories, setCategoriesData] = useState([])
 
     useEffect(() => {
         localStorage.setItem("limitData", limitData);
     }, [limitData]);
+
+    useEffect(() => {
+        getArticle(currentPage, limitData, filterText, filterStatus)
+    }, [currentPage, limitData, filterText, filterStatus]);
+
+    useEffect(() => {
+        getCategory(limitData, filterText);
+    }, []);
+
+    const getArticle = async (page, limit, keywords) => {
+        fetchWrapper.get(`/api/article/get-data?page=${page}&limit=${limit}&keywords=${keywords}`).then((res) => {
+            const inputDataToast = "input-data-toast"
+            if (res.data.success) {
+                setArticle(res.data)
+                setTotalPages(res.totalPages)
+                setTotalArticle(res.total)
+            } else {
+                if (!toast.isActive(inputDataToast)) {
+                    toast({
+                        id: inputDataToast,
+                        title: res.message,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                        position: "top",
+                    })
+                }
+            }
+        })
+    }
+
+    const getCategory = async () => {
+        fetchWrapper.get(`/api/category/get-data`).then((res) => {
+            if (res.success) {
+                setCategoriesData(res.success)
+            } else {
+                if (!toast.isActive(inputDataToast)) {
+                    toast({
+                        id: inputDataToast,
+                        title: res.message,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                        position: "top",
+                    })
+                }
+            }
+        })
+    }
+
+    const onEditClicked = (newsUuid) => {
+        setEditedNewsUuid(newsUuid)
+        getNewsByUuid(newsUuid)
+    }
+
+    const onEditSubmit = async (statusShare) => {
+        if (editedTitle && editedCategory) {
+            setEditedOnSubmission(true);
+
+            const formData = new FormData();
+            formData.append("user_id", userService.userValue.id);
+            formData.append("uuid", editedNewsUuid);
+            formData.append("asset", editedFilePicture);
+            formData.append("title", editedTitle);
+            formData.append("uploaded_by", userService?.userValue.id);
+            formData.append("uuid_category", editedCategory);
+            formData.append("status", statusShare);
+            formData.append("content", editedContent);
+
+            fetchWrapper
+                .postForm(`/api/news/update-data`, formData)
+                .then((res) => {
+                    const toastId = "update-news-toast";
+                    if (res.success) {
+                        if (!toast.isActive(toastId)) {
+                            toast({
+                                id: toastId,
+                                title: "News updated successfully.",
+                                status: "success",
+                                duration: 1500,
+                                isClosable: true,
+                                position: "top",
+                            });
+                        }
+                        setTimeout(() => router.reload(), 1500);
+                    } else {
+                        toast({
+                            title: res.message,
+                            status: "error",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "top",
+                        });
+                    }
+                })
+                .finally(() => setOnSubmission(false));
+        } else {
+            setErrorTooltip(true);
+            setTimeout(() => setErrorTooltip(false), 3000);
+        }
+    };
+
+    const getNewsByUuid = async (uuid) => {
+        fetchWrapper
+            .get(`/api/news/get-data-details?uuid=${uuid}`)
+            .then((res) => {
+                if (res.success) {
+                    setEditedPicture(res.data.asset);
+                    setEditedTitle(res.data.title);
+                    setEditedContent(res.data.content);
+                    setEditedCategory(res.data.uuid_category);
+                }
+            });
+    };
+
+    const setContentValue = (value) => {
+        const lines = value.split('\n');
+        const formattedContent = lines.map((line, index) => `${index + 1}. ${line}`).join('\n');
+        setContent(formattedContent);
+    };
 
     return (
         <VStack p={{ base: "4", xl: "8" }} align="stretch" minH="100vh" gap="5" spacing={4}>

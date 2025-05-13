@@ -27,7 +27,7 @@ const initDatabase = (sequelize, Types) => {
             uuid_category: Types.STRING(100),
             description: Types.STRING(100),
             link: Types.STRING(100),
-            status: Types.ENUM("Active", "Inactive", "Deleted"),
+            status: Types.ENUM("Published", "Draft"),
 
             created_at: Types.DATE,
             updated_at: Types.DATE,

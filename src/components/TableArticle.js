@@ -21,14 +21,65 @@ import {
     Thead,
     Tr,
     useDisclosure,
+    useToast,
     VStack,
 } from "@chakra-ui/react";
 import { RiExternalLinkLine } from "react-icons/ri";
 import moment from "moment";
+import { useRouter } from "next/router";
 
-export default function TableArticle({ data }) {
+export default function TableArticle({ data, handleEditNews }) {
+    const toast = useToast();
+    const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedImage, setSelectedImage] = useState("");
+
+    const handleEdit = (data) => {
+        handleEditNews(data);
+    };
+
+    const handleClick = () => {
+        setIsOpenAlert(true);
+        setAlert({ type: "success", message: "Hello Next.js!" });
+    };
+
+    const deleteData = (uuid) => {
+        setOnSubmission(true);
+
+        fetchWrapper
+            .post("/api/news/delete-data", {
+                user_id: userService.userValue.id,
+                uuid: uuid
+            })
+            .then((res) => {
+                const toastId = "input-data-toast";
+                if (res.success) {
+                    if (!toast.isActive(toastId)) {
+                        toast({
+                            id: toastId,
+                            title: "News successfully deleted",
+                            status: "success",
+                            duration: 1500,
+                            isClosable: true,
+                            position: "top",
+                        });
+                    }
+                    setTimeout(() => router.reload(), 2000);
+                } else {
+                    if (!toast.isActive(toastId)) {
+                        toast({
+                            id: toastId,
+                            title: res.message,
+                            status: "error",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "top",
+                        });
+                    }
+                }
+            })
+            .finally(() => setOnSubmission(false));
+    };
 
     const handleImageClick = (assets) => {
         setSelectedImage(assets);
@@ -55,7 +106,7 @@ export default function TableArticle({ data }) {
                     <Tbody>
                         {data?.map((item, index) => (
                             <Tr
-                            key={item.id}
+                                key={item.id}
                             >
                                 <Td textAlign="center">
                                     {index + 1}
@@ -66,7 +117,7 @@ export default function TableArticle({ data }) {
                                         boxSize="10"
                                         src={item.asset}
                                         cursor="pointer"
-                                    onClick={() => handleImageClick(item.asset)}
+                                        onClick={() => handleImageClick(item.asset)}
                                     />
                                 </Td>
 
@@ -84,7 +135,7 @@ export default function TableArticle({ data }) {
 
                                 <Td textAlign="center">
                                     <Badge bg="#EB1C23" textColor="white" px={4} py={1} borderRadius="md">
-                                        {item.uuid_category}
+                                        {item.uuid_category.category}
                                     </Badge>
                                 </Td>
 
