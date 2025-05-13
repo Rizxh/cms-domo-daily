@@ -1,3 +1,7 @@
+import 'primereact/resources/themes/saga-blue/theme.css'; // atau pilih tema lain
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+
 import { ChakraProvider } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
