@@ -53,6 +53,91 @@ export default function ArticleRequest() {
         getCategory(limitData, filterText);
     }, []);
 
+    const onEditClicked = (articleUuid) => {
+        setEditedArticleUuid(articleUuid)
+        getArticleByUuid(articleUuid)
+    }
+
+    const handleEdit = async (statusShare) => {
+        if (editedTitle && editedCategory) {
+            setEditedOnSubmission(true);
+
+            const formData = new FormData();
+            formData.append("user_id", userService.userValue.id);
+            formData.append("uuid", editedArticleUuid);
+            formData.append("assets", editedFilePicture);
+            formData.append("title", editedTitle);
+            formData.append("uploaded_by", userService?.userValue.id);
+            formData.append("uuid_category", editedCategory);
+            formData.append("status", statusShare);
+            formData.append("description", editedDescription);
+            formData.append("link", editedLink);
+            if (statusShare === "Published") {
+                formData.append("created_at", new Date().toISOString());
+            }
+
+            fetchWrapper
+                .postForm(`/api/article/update-data`, formData)
+                .then((res) => {
+                    const toastId = "update-article-toast";
+                    if (res.success) {
+                        if (!toast.isActive(toastId)) {
+                            toast({
+                                id: toastId,
+                                title: "Article updated successfully.",
+                                status: "success",
+                                duration: 1500,
+                                isClosable: true,
+                                position: "top",
+                            });
+                        }
+                        setTimeout(() => router.reload(), 1500);
+                    } else {
+                        toast({
+                            title: res.message,
+                            status: "error",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "top",
+                        });
+                    }
+                })
+                .finally(() => setOnSubmission(false));
+        } else {
+            setErrorTooltip(true);
+            setTimeout(() => setErrorTooltip(false), 3000);
+        }
+    };
+
+    const getArticleByUuid = async (uuid) => {
+        fetchWrapper
+            .get(`/api/article/get-data-details?uuid=${uuid}`)
+            .then((res) => {
+                if (res.success) {
+                    setEditedPicture(res.data.assets);
+                    setEditedTitle(res.data.title);
+                    setEditedDescription(res.data.content);
+                    setEditedCategory(res.data.uuid_category);
+                }
+            });
+    };
+
+    const getCategories = async () => {
+        fetchWrapper.get(`/api/category/get-data`).then((res) => {
+            if (res.success) {
+                setCategories(res.data);
+            } else {
+                toast({
+                    title: res.message,
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top",
+                })
+            }
+        })
+    }
+
     const getArticle = async (page, limit, keywords) => {
         fetchWrapper.get(`/api/article/get-data?page=${page}&limit=${limit}&keywords=${keywords}`).then((res) => {
             const inputDataToast = "input-data-toast"
@@ -176,9 +261,9 @@ export default function ArticleRequest() {
                 </SimpleGrid>
 
                 <Divider mt="5" mb="5" />
-                <TableArticle 
-                // handleEditNews={onEditClicked}
-                data={articleData} />
+                <TableArticle
+                    handleEditArticle={onEditClicked}
+                    data={articleData} />
                 <Box mt="5">
                     <HStack spacing="3" justify="space-between">
                         {!isMobile && (

@@ -65,7 +65,7 @@ export default function Sidebar({ children }) {
             "Super Admin": [
               { href: "/admin/article", label: "Article", icon: "/icons/article.png" },
               { href: "/admin/category", label: "Category", icon: "/icons/category.png" },
-              { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
+              // { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
               { href: "/admin/user", label: "User", icon: "/icons/user.png" },
               { href: "/admin/history", label: "History", icon: "/icons/history.png" },
             ],

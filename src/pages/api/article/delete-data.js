@@ -1,6 +1,6 @@
 import { Article, User, UserHistory } from "../../../../database/models";
 import fs from "fs/promises";
-import { apiHandler } from "helpers/api";
+import { apiHandler } from "../../../../helpers/api";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
@@ -25,7 +25,7 @@ async function handler(req, res) {
 
       if (findArticle) {
         // Delete the banner image file
-        const assetPath = path.join(process.cwd(), "public", findArticle.asset);
+        const assetPath = path.join(process.cwd(), "public", findArticle.assets);
         try {
           await fs.unlink(assetPath);
         } catch (err) {

@@ -29,26 +29,38 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import { fetchWrapper } from "../../helpers";
 import { userService } from "../../services";
+import SweetAlert from "./SweetAlert";
+import { BiSolidTrashAlt } from "react-icons/bi";
+import { MdOutlineModeEdit } from "react-icons/md";
 
 export default function TableArticle(props) {
     const toast = useToast();
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedImage, setSelectedImage] = useState("");
+    const [currentDeletedData, setCurrentDeletedData] = useState();
+    const [alert, setAlert] = useState({});
+    const [isOpenAlert, setIsOpenAlert] = useState(false);
     const [onSubmission, setOnSubmission] = useState(false);
 
-    const { data, handleEditNews } = props;
+    const { data, handleEditArticle } = props;
 
-    const handleEdit = (item) => {
-        handleEditNews(item);
+    const handleEdit = (data) => {
+        handleEditArticle(data);
+    };
+
+    const handleClick = () => {
+        setIsOpenAlert(true);
+        setAlert({ type: "success", message: "Hello Next.js!" });
     };
 
     const deleteData = (uuid) => {
         setOnSubmission(true);
+
         fetchWrapper
-            .post("/api/news/delete-data", {
+            .post("/api/article/delete-data", {
                 user_id: userService.userValue.id,
-                uuid: uuid,
+                uuid: uuid
             })
             .then((res) => {
                 const toastId = "input-data-toast";
@@ -85,6 +97,11 @@ export default function TableArticle(props) {
         onOpen();
     };
 
+    const truncateText = (text, maxLength = 30) => {
+        if (!text) return "";
+        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    };    
+
     return (
         <>
             <TableContainer>
@@ -100,6 +117,7 @@ export default function TableArticle(props) {
                             <Th textAlign="center">Created At</Th>
                             <Th textAlign="center">Updated At</Th>
                             <Th textAlign="center">Link</Th>
+                            <Th textAlign="center">Status</Th>
                             <Th textAlign="center">Action</Th>
                         </Tr>
                     </Thead>
@@ -116,10 +134,10 @@ export default function TableArticle(props) {
                                     />
                                 </Td>
                                 <Td textAlign="center">
-                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{item.title}</Text>
+                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{truncateText(item.title)}</Text>
                                 </Td>
                                 <Td textAlign="center">
-                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{item.description}</Text>
+                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{truncateText(item.description)}</Text>
                                 </Td>
                                 <Td textAlign="center">
                                     <Badge bg="#EB1C23" textColor="white" px={4} py={1} borderRadius="md">
@@ -152,22 +170,37 @@ export default function TableArticle(props) {
                                     </Link>
                                 </Td>
                                 <Td textAlign="center">
+                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{item.status}</Text>
+                                </Td>
+                                <Td textAlign="center">
                                     <HStack justifyContent="center" spacing={2}>
                                         <IconButton
-                                            aria-label="Edit"
-                                            size="sm"
-                                            colorScheme="blue"
-                                            icon={<RiPencilLine />}
-                                            onClick={() => handleEdit(item)}
+                                            color="white"
+                                            bg="#CB1517"
+                                            fontSize="25px"
+                                            icon={<MdOutlineModeEdit />}
+                                            _hover={{ bg: "#CB1517" }}
+                                            isDisabled={onSubmission}
+                                            onClick={() => router.push(`/admin/article-data?page=${item.uuid}`)}
                                         />
                                         <IconButton
-                                            aria-label="Delete"
-                                            size="sm"
-                                            colorScheme="red"
-                                            icon={<RiDeleteBin5Line />}
-                                            onClick={() => deleteData(item.uuid)}
+                                            color="white"
+                                            bg="#CB1517"
+                                            fontSize="20px"
+                                            icon={<BiSolidTrashAlt />}
+                                            _hover={{ bg: "#A81314" }}
                                             isDisabled={onSubmission}
+                                            onClick={() => {
+                                                setCurrentDeletedData(item);
+                                                handleClick();
+                                            }}
                                         />
+                                        {isOpenAlert && (
+                                            <SweetAlert
+                                                alert={alert}
+                                                handleDelete={() => deleteData(currentDeletedData.uuid)}
+                                            />
+                                        )}
                                     </HStack>
                                 </Td>
                             </Tr>

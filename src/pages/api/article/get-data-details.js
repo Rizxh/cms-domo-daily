@@ -1,5 +1,5 @@
 import { Article, Category, User } from "../../../../database/models";
-import { apiHandler } from "helpers/api";
+import { apiHandler } from "../../../../helpers/api";
 
 export default apiHandler(handler);
 

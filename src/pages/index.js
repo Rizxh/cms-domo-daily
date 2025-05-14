@@ -26,7 +26,7 @@ export default function Login() {
         if(userService?.userValue?.role === "Copywriter") {
           router.push('/admin/article')
         } else {
-          router.push('/admin/media')
+          router.push('/admin/article')
         }
       }
     }
@@ -40,7 +40,7 @@ export default function Login() {
           if(res.role === "Copywriter") {
             router.push('/admin/article')
           } else {
-            router.push('/admin/media')
+            router.push('/admin/article')
           }
         } else {
           if(!toast.isActive(inputDataToast)) {
