@@ -24,32 +24,31 @@ import {
     useToast,
     VStack,
 } from "@chakra-ui/react";
-import { RiExternalLinkLine } from "react-icons/ri";
+import { RiExternalLinkLine, RiPencilLine, RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment";
 import { useRouter } from "next/router";
+import { fetchWrapper } from "../../helpers";
+import { userService } from "../../services";
 
-export default function TableArticle({ data, handleEditNews }) {
+export default function TableArticle(props) {
     const toast = useToast();
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedImage, setSelectedImage] = useState("");
+    const [onSubmission, setOnSubmission] = useState(false);
 
-    const handleEdit = (data) => {
-        handleEditNews(data);
-    };
+    const { data, handleEditNews } = props;
 
-    const handleClick = () => {
-        setIsOpenAlert(true);
-        setAlert({ type: "success", message: "Hello Next.js!" });
+    const handleEdit = (item) => {
+        handleEditNews(item);
     };
 
     const deleteData = (uuid) => {
         setOnSubmission(true);
-
         fetchWrapper
             .post("/api/news/delete-data", {
                 user_id: userService.userValue.id,
-                uuid: uuid
+                uuid: uuid,
             })
             .then((res) => {
                 const toastId = "input-data-toast";
@@ -57,7 +56,7 @@ export default function TableArticle({ data, handleEditNews }) {
                     if (!toast.isActive(toastId)) {
                         toast({
                             id: toastId,
-                            title: "News successfully deleted",
+                            title: "Article successfully deleted",
                             status: "success",
                             duration: 1500,
                             isClosable: true,
@@ -101,58 +100,42 @@ export default function TableArticle({ data, handleEditNews }) {
                             <Th textAlign="center">Created At</Th>
                             <Th textAlign="center">Updated At</Th>
                             <Th textAlign="center">Link</Th>
+                            <Th textAlign="center">Action</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
                         {data?.map((item, index) => (
-                            <Tr
-                                key={item.id}
-                            >
-                                <Td textAlign="center">
-                                    {index + 1}
-                                </Td>
-
+                            <Tr key={item.id}>
+                                <Td textAlign="center">{index + 1}</Td>
                                 <Td textAlign="center">
                                     <Avatar
                                         boxSize="10"
-                                        src={item.asset}
+                                        src={item.assets}
                                         cursor="pointer"
-                                        onClick={() => handleImageClick(item.asset)}
+                                        onClick={() => handleImageClick(item.assets)}
                                     />
                                 </Td>
-
                                 <Td textAlign="center">
-                                    <Text fontSize={{ base: "xs", xl: "sm" }}>
-                                        {item.title}
-                                    </Text>
+                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{item.title}</Text>
                                 </Td>
-
                                 <Td textAlign="center">
-                                    <Text fontSize={{ base: "xs", xl: "sm" }}>
-                                        {item.description}
-                                    </Text>
+                                    <Text fontSize={{ base: "xs", xl: "sm" }}>{item.description}</Text>
                                 </Td>
-
                                 <Td textAlign="center">
                                     <Badge bg="#EB1C23" textColor="white" px={4} py={1} borderRadius="md">
-                                        {item.uuid_category.category}
+                                        {item.category.category || "-"}
                                     </Badge>
                                 </Td>
-
                                 <Td textAlign="center">
                                     <HStack justifyContent="center">
-                                        <Text fontSize="sm">
-                                            {item.uploaded_by?.name}
-                                        </Text>
+                                        <Text fontSize="sm">{item.user.name || "-"}</Text>
                                     </HStack>
                                 </Td>
-
                                 <Td textAlign="center">
                                     <Text fontSize="sm">
                                         {moment(item.created_at).format("YYYY-MM-DD HH:mm")}
                                     </Text>
                                 </Td>
-
                                 <Td textAlign="center">
                                     <Text fontSize="sm">
                                         {item.updated_at !== item.created_at
@@ -160,17 +143,32 @@ export default function TableArticle({ data, handleEditNews }) {
                                             : "—"}
                                     </Text>
                                 </Td>
-
                                 <Td textAlign="center">
-                                    <Link
-                                        href={item.link}
-                                        isExternal color="blue.500"
-                                    >
+                                    <Link href={item.link} isExternal color="blue.500">
                                         <HStack justifyContent="center">
                                             <Text fontSize="sm">Visit</Text>
                                             <RiExternalLinkLine />
                                         </HStack>
                                     </Link>
+                                </Td>
+                                <Td textAlign="center">
+                                    <HStack justifyContent="center" spacing={2}>
+                                        <IconButton
+                                            aria-label="Edit"
+                                            size="sm"
+                                            colorScheme="blue"
+                                            icon={<RiPencilLine />}
+                                            onClick={() => handleEdit(item)}
+                                        />
+                                        <IconButton
+                                            aria-label="Delete"
+                                            size="sm"
+                                            colorScheme="red"
+                                            icon={<RiDeleteBin5Line />}
+                                            onClick={() => deleteData(item.uuid)}
+                                            isDisabled={onSubmission}
+                                        />
+                                    </HStack>
                                 </Td>
                             </Tr>
                         ))}
@@ -184,11 +182,7 @@ export default function TableArticle({ data, handleEditNews }) {
                     <ModalHeader>Preview</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody display="flex" justifyContent="center" pb="8">
-                        <Image
-                            // src={selectedImage}
-                            alt="Preview"
-                            maxH="500px"
-                            borderRadius="lg" />
+                        <Image src={selectedImage} alt="Preview" maxH="500px" borderRadius="lg" />
                     </ModalBody>
                 </ModalContent>
             </Modal>

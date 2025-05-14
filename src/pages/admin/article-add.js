@@ -77,7 +77,7 @@ export default function ArticleAdd() {
             const formData = new FormData();
             formData.append("user_id", userService.userValue.id)
             formData.append("title", title);
-            formData.append("asset", filePicture);
+            formData.append("assets", filePicture);
             formData.append("status", statusShare);
             formData.append("link", link);
             formData.append("description", description);
@@ -116,7 +116,7 @@ export default function ArticleAdd() {
             const formData = new FormData();
             formData.append("user_id", userService.userValue.id);
             formData.append("uuid", editedArticleUuid);
-            formData.append("asset", editedFilePicture);
+            formData.append("assets", editedFilePicture);
             formData.append("title", editedTitle);
             formData.append("uploaded_by", userService?.userValue.id);
             formData.append("uuid_category", editedCategory);
@@ -165,7 +165,7 @@ export default function ArticleAdd() {
             .get(`/api/article/get-data-details?uuid=${uuid}`)
             .then((res) => {
                 if (res.success) {
-                    setEditedPicture(res.data.asset);
+                    setEditedPicture(res.data.assets);
                     setEditedTitle(res.data.title);
                     setEditedDescription(res.data.content);
                     setEditedCategory(res.data.uuid_category);

@@ -37,6 +37,7 @@ export default function ArticleRequest() {
     const [totalArticle, setTotalArticle] = useState(0);
     const [Article, setArticle] = useState([]);
     const [errorTooltip, setErrorTooltip] = useState(false);
+    const [articleData, setArticleData] = useState([]);
 
     const [categories, setCategoriesData] = useState([])
 
@@ -55,8 +56,8 @@ export default function ArticleRequest() {
     const getArticle = async (page, limit, keywords) => {
         fetchWrapper.get(`/api/article/get-data?page=${page}&limit=${limit}&keywords=${keywords}`).then((res) => {
             const inputDataToast = "input-data-toast"
-            if (res.data.success) {
-                setArticle(res.data)
+            if (res.data) {
+                setArticleData(res.data)
                 setTotalPages(res.totalPages)
                 setTotalArticle(res.total)
             } else {
@@ -92,77 +93,6 @@ export default function ArticleRequest() {
             }
         })
     }
-
-    const onEditClicked = (newsUuid) => {
-        setEditedNewsUuid(newsUuid)
-        getNewsByUuid(newsUuid)
-    }
-
-    const onEditSubmit = async (statusShare) => {
-        if (editedTitle && editedCategory) {
-            setEditedOnSubmission(true);
-
-            const formData = new FormData();
-            formData.append("user_id", userService.userValue.id);
-            formData.append("uuid", editedNewsUuid);
-            formData.append("asset", editedFilePicture);
-            formData.append("title", editedTitle);
-            formData.append("uploaded_by", userService?.userValue.id);
-            formData.append("uuid_category", editedCategory);
-            formData.append("status", statusShare);
-            formData.append("content", editedContent);
-
-            fetchWrapper
-                .postForm(`/api/news/update-data`, formData)
-                .then((res) => {
-                    const toastId = "update-news-toast";
-                    if (res.success) {
-                        if (!toast.isActive(toastId)) {
-                            toast({
-                                id: toastId,
-                                title: "News updated successfully.",
-                                status: "success",
-                                duration: 1500,
-                                isClosable: true,
-                                position: "top",
-                            });
-                        }
-                        setTimeout(() => router.reload(), 1500);
-                    } else {
-                        toast({
-                            title: res.message,
-                            status: "error",
-                            duration: 3000,
-                            isClosable: true,
-                            position: "top",
-                        });
-                    }
-                })
-                .finally(() => setOnSubmission(false));
-        } else {
-            setErrorTooltip(true);
-            setTimeout(() => setErrorTooltip(false), 3000);
-        }
-    };
-
-    const getNewsByUuid = async (uuid) => {
-        fetchWrapper
-            .get(`/api/news/get-data-details?uuid=${uuid}`)
-            .then((res) => {
-                if (res.success) {
-                    setEditedPicture(res.data.asset);
-                    setEditedTitle(res.data.title);
-                    setEditedContent(res.data.content);
-                    setEditedCategory(res.data.uuid_category);
-                }
-            });
-    };
-
-    const setContentValue = (value) => {
-        const lines = value.split('\n');
-        const formattedContent = lines.map((line, index) => `${index + 1}. ${line}`).join('\n');
-        setContent(formattedContent);
-    };
 
     return (
         <VStack p={{ base: "4", xl: "8" }} align="stretch" minH="100vh" gap="5" spacing={4}>
@@ -246,7 +176,9 @@ export default function ArticleRequest() {
                 </SimpleGrid>
 
                 <Divider mt="5" mb="5" />
-                <TableArticle data={Article} />
+                <TableArticle 
+                // handleEditNews={onEditClicked}
+                data={articleData} />
                 <Box mt="5">
                     <HStack spacing="3" justify="space-between">
                         {!isMobile && (

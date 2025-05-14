@@ -46,7 +46,7 @@ async function saveArticle(req, res) {
     const uuidCategory = fields.uuid_category[0];
     const uploadedBy = fields.uploaded_by[0];
     
-    const assetFile = files.asset[0];
+    const assetFile = files.assets[0];
     console.log("value", JSON.stringify(assetFile));
     const uploadDir = path.join(process.cwd(), "public", "uploads");
 
@@ -61,7 +61,7 @@ async function saveArticle(req, res) {
     const newArticle = await Article.create({
       uuid: uuidv4(),
       uuid_category: uuidCategory,
-      asset: `/uploads/${newFilename}`,
+      assets: `/uploads/${newFilename}`,
       title: title,
       description: description,
       link: link,
