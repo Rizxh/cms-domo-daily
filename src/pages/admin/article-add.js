@@ -17,12 +17,8 @@ import {
     useToast,
     Flex,
     Select,
-    InputGroup,
-    InputLeftAddon,
-    InputRightAddon,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import { FiUpload } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { userService } from "../../../services";
@@ -223,7 +219,7 @@ export default function ArticleAdd() {
                     <Heading size="md" fontWeight="600">Article Information</Heading>
                 </CardHeader>
                 <CardBody as={Stack} spacing="6">
-                    {/* Upload Banner */}
+                    {/* Upload Photo */}
                     <Box
                         w="100%"
                         h="400px"
@@ -260,7 +256,7 @@ export default function ArticleAdd() {
                     </Box>
 
                     {/* Form Fields */}
-                    <FormControl>
+                    <FormControl id="title" isInvalid={!title & errorTooltip} isRequired>
                         <FormLabel>Title</FormLabel>
                         <Input
                             name="title"
@@ -270,7 +266,7 @@ export default function ArticleAdd() {
                         />
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="category" isInvalid={!category & errorTooltip} isRequired>
                         <FormLabel>Category</FormLabel>
                         <Select value={category} onChange={(e) => setCategory(e.target.value)} id="category" placeholder="Select category">
                             {categories.map((data, index) => {
@@ -283,7 +279,7 @@ export default function ArticleAdd() {
                         </Select>
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="status" isInvalid={!status & errorTooltip} isRequired>
                         <FormLabel>Status</FormLabel>
                         <Select
                             placeholder="Choose article status"
@@ -297,7 +293,7 @@ export default function ArticleAdd() {
                         </Select>
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="link" isInvalid={!link & errorTooltip}>
                         <FormLabel>Link</FormLabel>
                         <Input
                             size="md"
@@ -306,11 +302,10 @@ export default function ArticleAdd() {
                          />
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="description" isInvalid={!description & errorTooltip} isRequired>
                         <FormLabel>Description</FormLabel>
                         <Box bg="white" border="1px solid #ccc" borderRadius="md" p={2}>
                             <Editor
-                                value={description}
                                 onTextChange={(e) => handleDescriptionChange(e.htmlValue)}
                                 style={{ height: '320px' }}
                                 // onTextChange={(e) => setDescription(e.target.value)}

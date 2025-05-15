@@ -16,22 +16,23 @@ async function handler(req, res) {
 
   async function getArticle(page, limit) {
     try {
-      const keywordCondition = req.query.keywords || req.query.category
-        ? {
-            [Op.or]: [
-              {
-                title: {
-                  [Op.like]: `%${req.query.keywords}%`,
+      const status = req.query.status && req.query.status !== "All" ? req.query.status : null;
+
+      const whereConditions = {
+        ...(status && { status }),
+        ...(req.query.keywords || req.query.category
+          ? {
+              [Op.or]: [
+                req.query.keywords && {
+                  title: { [Op.like]: `%${req.query.keywords}%` },
                 },
-              },
-              {
-                "$category.category$": {
-                  [Op.like]: `%${req.query.category}%`,
+                req.query.category && {
+                  "$category.name$": { [Op.like]: `%${req.query.category}%` },
                 },
-              },
-            ],
-          }
-        : {};
+              ].filter(Boolean),
+            }
+          : {}),
+      };
 
       const offset = (page - 1) * limit;
       const findArticle = await Article.findAndCountAll({
@@ -45,11 +46,12 @@ async function handler(req, res) {
             as: "user",
           },
         ],
-        where: keywordCondition,
+        where: whereConditions,
         offset,
         limit,
         order: [["id", "DESC"]],
       });
+      
 
       const totalPages = Math.ceil(findArticle.count / limit);
 

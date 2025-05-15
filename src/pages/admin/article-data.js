@@ -17,12 +17,8 @@ import {
     useToast,
     Flex,
     Select,
-    InputGroup,
-    InputLeftAddon,
-    InputRightAddon,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";;
 import { FiUpload } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { userService } from "../../../services";
@@ -31,7 +27,7 @@ import { Editor } from "primereact/editor";
 
 export default function ArticleAdd() {
     const { query } = useRouter();
-    const articleUuid = query.page; // Pastikan parameter URL-nya adalah ?page=UUID
+    const articleUuid = query.page;
     const router = useRouter();
     const toast = useToast();
     const editedPicRef = useRef();
@@ -51,7 +47,6 @@ export default function ArticleAdd() {
         return parseInt(localStorage.getItem("limitData") || 10);
     });
     const [filterText, setFilterText] = useState("");
-    const [filterStatus, setFilterStatus] = useState("All");
 
     useEffect(() => {
         getCategories(limitData, filterText);
@@ -199,7 +194,7 @@ export default function ArticleAdd() {
                     <Heading size="md" fontWeight="600">Article Information</Heading>
                 </CardHeader>
                 <CardBody as={Stack} spacing="6">
-                    {/* Upload Banner */}
+                    {/* Update Photo */}
                     <Box
                         w="100%"
                         h="400px"
@@ -236,7 +231,7 @@ export default function ArticleAdd() {
                     </Box>
 
                     {/* Form Fields */}
-                    <FormControl>
+                    <FormControl id="editedTitle" isInvalid={!editedTitle & errorTooltip}>
                         <FormLabel>Title</FormLabel>
                         <Input
                             name="title"
@@ -246,7 +241,7 @@ export default function ArticleAdd() {
                         />
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="editedCategory" isInvalid={!editedCategory & errorTooltip}>
                         <FormLabel>Category</FormLabel>
                         <Select value={editedCategory} onChange={(e) => setEditedCategory(e.target.value)} id="category" placeholder="Select category">
                             {categories.map((data, index) => {
@@ -259,7 +254,7 @@ export default function ArticleAdd() {
                         </Select>
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="editedStatus" isInvalid={!editedStatusShare & errorTooltip}>
                         <FormLabel>Status</FormLabel>
                         <Select
                             placeholder="Choose article status"
@@ -273,7 +268,7 @@ export default function ArticleAdd() {
                         </Select>
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="editedLink" isInvalid={!editedLink & errorTooltip}>
                         <FormLabel>Link</FormLabel>
                         <Input
                             size="md"
@@ -282,7 +277,7 @@ export default function ArticleAdd() {
                          />
                     </FormControl>
 
-                    <FormControl>
+                    <FormControl id="editedDescription" isInvalid={!editedDescription & errorTooltip}>
                         <FormLabel>Description</FormLabel>
                         <Box bg="white" border="1px solid #ccc" borderRadius="md" p={2}>
                             <Editor

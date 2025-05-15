@@ -35,8 +35,6 @@ export default function ArticleRequest() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalArticle, setTotalArticle] = useState(0);
-    const [Article, setArticle] = useState([]);
-    const [errorTooltip, setErrorTooltip] = useState(false);
     const [articleData, setArticleData] = useState([]);
 
     const [categories, setCategoriesData] = useState([])
@@ -58,57 +56,6 @@ export default function ArticleRequest() {
         getArticleByUuid(articleUuid)
     }
 
-    const handleEdit = async (statusShare) => {
-        if (editedTitle && editedCategory) {
-            setEditedOnSubmission(true);
-
-            const formData = new FormData();
-            formData.append("user_id", userService.userValue.id);
-            formData.append("uuid", editedArticleUuid);
-            formData.append("assets", editedFilePicture);
-            formData.append("title", editedTitle);
-            formData.append("uploaded_by", userService?.userValue.id);
-            formData.append("uuid_category", editedCategory);
-            formData.append("status", statusShare);
-            formData.append("description", editedDescription);
-            formData.append("link", editedLink);
-            if (statusShare === "Published") {
-                formData.append("created_at", new Date().toISOString());
-            }
-
-            fetchWrapper
-                .postForm(`/api/article/update-data`, formData)
-                .then((res) => {
-                    const toastId = "update-article-toast";
-                    if (res.success) {
-                        if (!toast.isActive(toastId)) {
-                            toast({
-                                id: toastId,
-                                title: "Article updated successfully.",
-                                status: "success",
-                                duration: 1500,
-                                isClosable: true,
-                                position: "top",
-                            });
-                        }
-                        setTimeout(() => router.reload(), 1500);
-                    } else {
-                        toast({
-                            title: res.message,
-                            status: "error",
-                            duration: 3000,
-                            isClosable: true,
-                            position: "top",
-                        });
-                    }
-                })
-                .finally(() => setOnSubmission(false));
-        } else {
-            setErrorTooltip(true);
-            setTimeout(() => setErrorTooltip(false), 3000);
-        }
-    };
-
     const getArticleByUuid = async (uuid) => {
         fetchWrapper
             .get(`/api/article/get-data-details?uuid=${uuid}`)
@@ -122,24 +69,8 @@ export default function ArticleRequest() {
             });
     };
 
-    const getCategories = async () => {
-        fetchWrapper.get(`/api/category/get-data`).then((res) => {
-            if (res.success) {
-                setCategories(res.data);
-            } else {
-                toast({
-                    title: res.message,
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                    position: "top",
-                })
-            }
-        })
-    }
-
-    const getArticle = async (page, limit, keywords) => {
-        fetchWrapper.get(`/api/article/get-data?page=${page}&limit=${limit}&keywords=${keywords}`).then((res) => {
+    const getArticle = async (page, limit, keywords, status) => {
+        fetchWrapper.get(`/api/article/get-data?page=${page}&limit=${limit}&keywords=${keywords}&status=${status}`).then((res) => {
             const inputDataToast = "input-data-toast"
             if (res.data) {
                 setArticleData(res.data)
@@ -234,12 +165,19 @@ export default function ArticleRequest() {
                             <Select
                                 fontSize={{ base: "xs", xl: "sm" }}
                                 borderRadius="md"
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
+                                onChange={(e) => {
+                                    setFilterStatus(e.target.value);
+                                    getArticle(
+                                      currentPage,
+                                      limitData,
+                                      filterStatus,
+                                      e.target.value
+                                    );
+                                  }}
                             >
                                 <option value="All">All</option>
-                                <option value="Active">Published</option>
-                                <option value="Inactive">Draft</option>
+                                <option value="Published">Published</option>
+                                <option value="Draft">Draft</option>
                             </Select>
                         </HStack>
 
