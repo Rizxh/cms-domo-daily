@@ -1,4 +1,4 @@
-import { Media } from "../../../../database/models";
+import { Article, Media } from "../../../../database/models";
 import { apiHandler } from "../../../../helpers/api";
 
 const { Op } = require("sequelize");
@@ -17,22 +17,28 @@ async function handler(req, res) {
     try {
       const keywordCondition = req.query.keywords
         ? {
-            [Op.or]: [
-              {
-                title: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-              {
-                link: {
-                  [Op.like]: `%${req.query.keywords}%`,
-                },
+            },
+            {
+              link: {
+                [Op.like]: `%${req.query.keywords}%`,
               },
-            ],
-          }
+            },
+          ],
+        }
         : {};
 
       const findMedia = await Media.findAndCountAll({
+        include: [
+          {
+            model: Article,
+            as: "status",
+          },
+        ],
         where: keywordCondition,
       });
 
