@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import fs from "fs/promises";
 import path from "path";
+import { link } from "fs";
 
 export const config = {
   api: {
@@ -50,10 +51,10 @@ async function handler(req, res) {
         });
       }
 
-      let assetArticle = findArticle.asset;
+      let assetArticle = findArticle.assets;
 
-      if (files.asset?.[0]) {
-        const assetFile = files.asset[0];
+      if (files.assets?.[0]) {
+        const assetFile = files.assets[0];
         const fileExt = path.extname(assetFile.originalFilename);
         const newFileName = `${uuidv4()}${fileExt}`;
         const newFilePath = path.join(form.uploadDir, newFileName);
@@ -62,11 +63,13 @@ async function handler(req, res) {
       }
 
       const updateArticle = {
-        asset: assetArticle,
+        assets: assetArticle,
         title: fields.title?.[0],
         content: fields.content?.[0],
         uuid_category: fields.uuid_category?.[0],
         status: fields.status?.[0],
+        link: fields.link[0],
+        description: fields.description[0],
         uploaded_by: fields.uploaded_by?.[0],
         updated_at: now.format("YYYY-MM-DD HH:mm"),
       };

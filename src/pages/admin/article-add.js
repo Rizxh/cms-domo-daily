@@ -56,8 +56,6 @@ export default function ArticleAdd() {
     const [editedOnSubmission, setEditedOnSubmission] = useState(false);
     const [errorTooltip, setErrorTooltip] = useState(false);
 
-    const DOMAIN_TEMPLATE = "https:/domodaily.com/"
-
     const [limitData, setLimitData] = useState(() => {
         return parseInt(localStorage.getItem("limitData") || 10);
     });
@@ -81,7 +79,7 @@ export default function ArticleAdd() {
             formData.append("title", title);
             formData.append("assets", filePicture);
             formData.append("status", statusShare);
-            formData.append("link", DOMAIN_TEMPLATE + link);
+            formData.append("link", link);
             formData.append("description", description);
             formData.append("uuid_category", category);
             formData.append("uploaded_by", userService?.userValue.id);
@@ -169,7 +167,7 @@ export default function ArticleAdd() {
                 if (res.success) {
                     setEditedPicture(res.data.assets);
                     setEditedTitle(res.data.title);
-                    setEditedDescription(res.data.content);
+                    setEditedDescription(res.data.description);
                     setEditedCategory(res.data.uuid_category);
                 }
             });
@@ -292,7 +290,7 @@ export default function ArticleAdd() {
                             size={{ base: "sm", lg: "md" }}
                             colorScheme="red"
                             value={status}
-                            onChange={(e) => setStatus(e.target.value)} // ← perbaikan di sini
+                            onChange={(e) => setStatus(e.target.value)}
                         >
                             <option value="Draft">Draft</option>
                             <option value="Published">Published</option>
@@ -301,10 +299,11 @@ export default function ArticleAdd() {
 
                     <FormControl>
                         <FormLabel>Link</FormLabel>
-                        <InputGroup size='md'>
-                            <InputLeftAddon>https://www.domodaily.com/</InputLeftAddon>
-                            <Input placeholder='mysite' onChange={(e) => setLink(e.target.value)} />
-                        </InputGroup>
+                        <Input
+                            size="md"
+                            value={link}
+                            onChange={(e) => setLink(e.target.value)}
+                         />
                     </FormControl>
 
                     <FormControl>

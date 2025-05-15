@@ -34,9 +34,8 @@ export default function ArticleAdd() {
     const articleUuid = query.page; // Pastikan parameter URL-nya adalah ?page=UUID
     const router = useRouter();
     const toast = useToast();
-    const picRef = useRef();
+    const editedPicRef = useRef();
     const [categories, setCategories] = useState([]);
-    const [onSubmission, setOnSubmission] = useState(false);
 
     const [editedTitle, setEditedTitle] = useState("");
     const [editedCategory, setEditedCategory] = useState("");
@@ -47,8 +46,6 @@ export default function ArticleAdd() {
     const [editedStatusShare, setEditedStatusShare] = useState(null);
     const [editedOnSubmission, setEditedOnSubmission] = useState(false);
     const [errorTooltip, setErrorTooltip] = useState(false);
-
-    const DOMAIN_TEMPLATE = "https:/domodaily.com/"
 
     const [limitData, setLimitData] = useState(() => {
         return parseInt(localStorage.getItem("limitData") || 10);
@@ -81,7 +78,7 @@ export default function ArticleAdd() {
             formData.append("uuid_category", editedCategory);
             formData.append("status", statusShare);
             formData.append("description", editedDescription);
-            formData.append("link", DOMAIN_TEMPLATE + editedLink);
+            formData.append("link", editedLink);
             if (statusShare === "Published") {
                 formData.append("created_at", new Date().toISOString());
             }
@@ -101,7 +98,7 @@ export default function ArticleAdd() {
                                 position: "top",
                             });
                         }
-                        setTimeout(() => router.reload(), 1500);
+                        setTimeout(() => router.push('/admin/article'), 1500);
                     } else {
                         toast({
                             title: res.message,
@@ -125,9 +122,9 @@ export default function ArticleAdd() {
             .then((res) => {
                 if (res.success) {
                     const data = res.data;
-                    setEditedPicture(data.assets); // untuk preview
+                    setEditedPicture(data.assets || "None");
                     setEditedTitle(data.title);
-                    setEditedDescription(data.content || "");
+                    setEditedDescription(data.description || "");
                     setEditedCategory(data.uuid_category || "");
                     setEditedStatusShare(data.status);
                     setEditedLink(data.link || "");
@@ -212,13 +209,13 @@ export default function ArticleAdd() {
                         alignItems="center"
                         justifyContent="center"
                         position="relative"
-                        onClick={() => picRef.current?.click()}
+                        onClick={() => editedPicRef.current?.click()}
                         cursor="pointer"
                     >
                         <input
                             type="file"
                             accept="image/*"
-                            ref={picRef}
+                            ref={editedPicRef}
                             style={{ display: "none" }}
                             onChange={(article) => {
                                 let fileObj = article.target.files[0];
@@ -278,10 +275,11 @@ export default function ArticleAdd() {
 
                     <FormControl>
                         <FormLabel>Link</FormLabel>
-                        <InputGroup size='md'>
-                            <InputLeftAddon>https://www.domodaily.com/</InputLeftAddon>
-                            <Input placeholder='mysite' onChange={(e) => setEditedLink(e.target.value)} />
-                        </InputGroup>
+                        <Input
+                            size="md"
+                            value={editedLink}
+                            onChange={(e) => setEditedLink(e.target.value)}
+                         />
                     </FormControl>
 
                     <FormControl>
