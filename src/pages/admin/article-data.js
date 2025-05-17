@@ -170,8 +170,9 @@ export default function ArticleAdd() {
                     userService?.userValue?.role === "Media") && (
                         <Flex gap="5">
                             <Button
-                                textColor="white"
-                                bg="#B6B09F"
+                                bg="#FFFF"
+                                shadow={"lg"}
+                                _hover={{ bg: "#B6B09F", textColor: "white" }}
                                 onClick={() => {
                                     router.push('/admin/article')
                                 }}
@@ -274,7 +275,7 @@ export default function ArticleAdd() {
                             size="md"
                             value={editedLink}
                             onChange={(e) => setEditedLink(e.target.value)}
-                         />
+                        />
                     </FormControl>
 
                     <FormControl id="editedDescription" isInvalid={!editedDescription & errorTooltip}>

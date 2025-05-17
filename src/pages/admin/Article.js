@@ -168,12 +168,12 @@ export default function ArticleRequest() {
                                 onChange={(e) => {
                                     setFilterStatus(e.target.value);
                                     getArticle(
-                                      currentPage,
-                                      limitData,
-                                      filterStatus,
-                                      e.target.value
+                                        currentPage,
+                                        limitData,
+                                        filterStatus,
+                                        e.target.value
                                     );
-                                  }}
+                                }}
                             >
                                 <option value="All">All</option>
                                 <option value="Published">Published</option>

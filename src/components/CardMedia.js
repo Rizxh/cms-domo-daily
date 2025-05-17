@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -21,11 +22,15 @@ import { FaEllipsisV } from "react-icons/fa";
 import SweetAlert from "./SweetAlert";
 import { fetchWrapper } from "../../helpers";
 import { userService } from "../../services";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 export default function CardMedia({
   uuid,
   mediaAsset,
+  mediaUuid,
   mediaTitle,
+  mediaDescription,
+  mediaCategory,
   mediaStatus,
   createdAt,
   updatedAt,
@@ -45,9 +50,9 @@ export default function CardMedia({
   }, []);
 
   const handleDelete = useCallback(() => {
-    fetchWrapper.post(`/api/media/delete-data`, { 
+    fetchWrapper.post(`/api/article/delete-data`, {
       user_id: userService.userValue.id,
-      uuid: uuid, 
+      uuid: uuid,
     }).then(() => {
       toast({
         title: "Media deleted successfully",
@@ -66,10 +71,10 @@ export default function CardMedia({
     return (
       <Badge
         variant="outline"
-        colorScheme={mediaStatus === "Active" ? "green" : "gray"}
-        w="20"
+        colorScheme={mediaStatus === "Published" ? "green" : "gray"}
+        w="95px"
         p="2"
-        pl={mediaStatus === "Active" ? "4" : "3"}
+        textAlign={"center"}
         borderRadius="3xl"
       >
         {mediaStatus}
@@ -77,17 +82,44 @@ export default function CardMedia({
     );
   }, [mediaStatus]);
 
-  const timeAgo = useMemo(() => {
-    const referenceTime = updatedAt || createdAt;
-    return formatDistanceToNow(new Date(referenceTime), { addSuffix: true });
-  }, [createdAt, updatedAt]);  
+  // const timeAgo = useMemo(() => {
+  //   const referenceTime = updatedAt || createdAt;
+  //   return formatDistanceToNow(new Date(referenceTime), { addSuffix: true });
+  // }, [createdAt, updatedAt]);  
 
-  const lengthTitle = useMemo(() => {
-    return mediaTitle.length > 27 ? `${mediaTitle.slice(0 , 27)}...` : mediaTitle
-  }, [mediaTitle])
+  // const lengthTitle = useMemo(() => {
+  //   return mediaTitle.length > 27 ? `${mediaTitle.slice(0 , 27)}...` : mediaTitle
+  // }, [mediaTitle])
 
   return (
-    <Card w="100%" bg="#FFFFFF" margin="auto" p="4">
+    <Card w="100%" bg="#FFFFFF" margin="auto" p="4" shadow="xl" mb="20" pt="4">
+      <CardBody p="0" mb="4">
+        <Flex justify={"space-between"} align="center" mb="4">
+          <Menu isLazy>
+            <MenuButton>
+              <Button bg="#EB1C23" textColor="white">
+                Action <ChevronDownIcon />
+              </Button>
+            </MenuButton>
+            <MenuList p="0">
+              <MenuItem p="4" rounded="md" onClick={() => onEditClicked(mediaUuid)}>
+                <Text fontWeight="500">Edit</Text>
+              </MenuItem>
+              <MenuItem p="4" rounded="md" onClick={onDeleteClicked}>
+                <Text fontWeight="500">Delete</Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+          <Text fontSize="md" color="gray.800">
+            {mediaCategory} | {statusBadge} 
+          </Text>
+        </Flex>
+      </CardBody>
+      <Box align={"center"}>
+        <Text fontWeight={600} fontSize="30px" pb="5" >
+          {/* {lengthTitle} */}{mediaTitle}
+        </Text>
+      </Box>
       <Box position="relative" width="100%" paddingTop="28%" mb="4">
         <Image
           position="absolute"
@@ -99,47 +131,13 @@ export default function CardMedia({
           alt={mediaTitle}
           borderRadius="lg"
           objectFit="contain"
-          filter={mediaStatus === "Active" ? "none" : "grayscale(100%)"}
+          filter={mediaStatus === "Published" ? "none" : "grayscale(100%)"}
         />
       </Box>
-      <CardBody p="0" mb="4">
-        <Flex justify={"space-between"}>
-          <Text fontWeight={600} fontSize="20px">
-            {lengthTitle}
-          </Text>
-          <Menu isLazy>
-            <MenuButton color="#495180">
-              <Icon as={FaEllipsisV} />
-            </MenuButton>
-            <MenuList p="0">
-              <MenuItem p="4" rounded="md" onClick={() => onEditClicked(uuid)}>
-                <Text fontWeight="500">Edit</Text>
-              </MenuItem>
-              <MenuItem p="4" rounded="md" onClick={onDeleteClicked}>
-                <Text fontWeight="500">Delete</Text>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </CardBody>
+      <Text fontWeight={400} fontSize="20px" pb="8">
+        {/* {lengthTitle} */}{mediaDescription}
+      </Text>
       <CardFooter p="0">
-        <Box
-          w={"100%"}
-          justifyContent={"space-between"}
-          display={"flex"}
-          alignItems={"center"}
-        >
-          {mediaStatus === "Active" ? (
-            <Text bg={"#F2FFED"} borderColor={"#41B500"} color={"#41B500"} borderRadius={"100px"}>
-              {statusBadge}
-            </Text>
-          ) : (
-            <Text bg={"#F8F8F8"} borderColor={"#606060"} color={"gray"} borderRadius={"100px"}>
-              {statusBadge}
-            </Text>
-          )}
-          <Text fontWeight="300">{timeAgo}</Text>
-        </Box>
       </CardFooter>
       {isOpenAlert && <SweetAlert alert={alert} handleDelete={handleDelete} />}
     </Card>
