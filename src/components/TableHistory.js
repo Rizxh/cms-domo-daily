@@ -1,13 +1,10 @@
 import {
-    Box,
     HStack,
-    IconButton,
     Table,
     TableContainer,
     Tbody,
     Td,
     Text,
-    Textarea,
     Th,
     Thead,
     Tr,
@@ -73,8 +70,8 @@ export default function TableHistory(props) {
                                     </Td>
                                     <Td textAlign="center">
                                         <HStack spacing="3" justifyContent="center">
-                                            <Text fontSize={{ base: "xs", xl: "sm" }} minW="150px" whiteSpace="pre-wrap">
-                                                {item.description.length > 100 ? item.description.match(/.{1,30}/g).join('\n') : item.description}
+                                            <Text fontSize={{ base: "xs", xl: "sm" }} whiteSpace="pre-wrap">
+                                                {item.description}
                                             </Text>
                                         </HStack>
                                     </Td>

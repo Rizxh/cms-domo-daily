@@ -15,7 +15,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
@@ -82,13 +82,13 @@ export default function CardMedia({
     );
   }, [mediaStatus]);
 
-  // const timeAgo = useMemo(() => {
-  //   const referenceTime = updatedAt || createdAt;
-  //   return formatDistanceToNow(new Date(referenceTime), { addSuffix: true });
-  // }, [createdAt, updatedAt]);  
+  const timeAgo = useMemo(() => {
+    const referenceTime = updatedAt || createdAt;
+    return formatDistanceToNow(new Date(referenceTime), { addSuffix: true });
+  }, [createdAt, updatedAt]);
 
   // const lengthTitle = useMemo(() => {
-  //   return mediaTitle.length > 27 ? `${mediaTitle.slice(0 , 27)}...` : mediaTitle
+  //   return mediaTitle.length > 27 ? `${mediaTitle.slice(0, 27)}...` : mediaTitle
   // }, [mediaTitle])
 
   return (
@@ -110,14 +110,24 @@ export default function CardMedia({
               </MenuItem>
             </MenuList>
           </Menu>
-          <Text fontSize="md" color="gray.800">
-            {mediaCategory} | {statusBadge} 
+          <Text fontSize="md" color="gray.800" fontWeight={500}>
+            <Flex justify={"space-between"} p="2" borderRadius="lg" align={"center"}>
+              <Box>
+                {mediaCategory} |
+              </Box>
+              <Box px={"2"}>
+                {format(new Date(createdAt), "dd MMM yyyy")} | {timeAgo} |
+              </Box>
+              <Box>
+                {statusBadge}
+              </Box>
+            </Flex>
           </Text>
         </Flex>
       </CardBody>
       <Box align={"center"}>
         <Text fontWeight={600} fontSize="30px" pb="5" >
-          {/* {lengthTitle} */}{mediaTitle}
+          {mediaTitle}
         </Text>
       </Box>
       <Box position="relative" width="100%" paddingTop="28%" mb="4">

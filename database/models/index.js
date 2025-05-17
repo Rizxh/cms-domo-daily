@@ -1,4 +1,3 @@
-import Media from "./media";
 import Category from "./category";
 import User from "./user";
 import UserHistory from "./user-history";
@@ -6,7 +5,6 @@ import Article from "./article";
 
 const models = {
   Article,
-  Media,
   Category,
   UserHistory,
   User,
@@ -19,4 +17,4 @@ Object.keys(models).forEach((modelName) => {
   }
 });
 
-export { User, UserHistory, Category, Media, Article };
+export { User, UserHistory, Category, Article };
