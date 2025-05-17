@@ -23,6 +23,7 @@ import SweetAlert from "./SweetAlert";
 import { fetchWrapper } from "../../helpers";
 import { userService } from "../../services";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import DOMPurify from 'dompurify';
 
 export default function CardMedia({
   uuid,
@@ -40,6 +41,7 @@ export default function CardMedia({
   const toast = useToast();
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [alert, setAlert] = useState({});
+  const sanitizedDescription = DOMPurify.sanitize(mediaDescription);
 
   const onDeleteClicked = useCallback(() => {
     setIsOpenAlert(true);
@@ -90,6 +92,9 @@ export default function CardMedia({
   // const lengthTitle = useMemo(() => {
   //   return mediaTitle.length > 27 ? `${mediaTitle.slice(0, 27)}...` : mediaTitle
   // }, [mediaTitle])
+
+  console.log("Original Description:", mediaDescription);
+  console.log("Sanitized Description:", sanitizedDescription);
 
   return (
     <Card w="100%" bg="#FFFFFF" margin="auto" p="4" shadow="xl" mb="20" pt="4">
@@ -144,9 +149,13 @@ export default function CardMedia({
           filter={mediaStatus === "Published" ? "none" : "grayscale(100%)"}
         />
       </Box>
-      <Text fontWeight={400} fontSize="20px" pb="8">
-        {/* {lengthTitle} */}{mediaDescription}
-      </Text>
+      <Box
+        fontWeight={400}
+        fontSize="20px"
+        pb="8"
+        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+      />
+
       <CardFooter p="0">
       </CardFooter>
       {isOpenAlert && <SweetAlert alert={alert} handleDelete={handleDelete} />}

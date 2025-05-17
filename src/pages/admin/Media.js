@@ -77,7 +77,7 @@ export default function Media() {
         <VStack p={{ base: "4", xl: "8" }} align="stretch" minH="100vh" gap="5" spacing={4}>
             <SimpleGrid m="2" columns={{ base: "1", lg: "2" }} gap="4" w="100%">
                 <Heading fontSize={{ base: "lg", lg: "2xl" }} fontWeight="500" textAlign={{ base: "center", lg: "left" }}>
-                    Media Preview (Search From Article Title)
+                    Media Preview (Search Article From Title)
                 </Heading>
             </SimpleGrid>
 
@@ -106,7 +106,7 @@ export default function Media() {
 
                 {filterText.trim() === "" ? (
                     <Box textAlign="center" py="6" color="gray.500">
-                        Search article from Title
+                        Please enter a title to search for articles.
                     </Box>
                 ) : filteredMedia.length > 0 ? (
                     filteredMedia.map((data, index) => (
