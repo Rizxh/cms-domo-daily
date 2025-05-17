@@ -97,12 +97,18 @@ export default function CardMedia({
   console.log("Sanitized Description:", sanitizedDescription);
 
   return (
-    <Card w="100%" bg="#FFFFFF" margin="auto" p="4" shadow="xl" mb="20" pt="4">
+    <Card w="100%" bg="#FFFFFF" margin="auto" p={{ base: 2, md: 4 }} shadow="xl" mb="20" pt="4">
       <CardBody p="0" mb="4">
-        <Flex justify={"space-between"} align="center" mb="4">
+        <Flex
+          justify="space-between"
+          align="center"
+          direction={{ base: "column", md: "row" }}
+          mb="4"
+          gap={4}
+        >
           <Menu isLazy>
             <MenuButton>
-              <Button bg="#EB1C23" textColor="white">
+              <Button bg="#EB1C23" textColor="white" size={{ base: "sm", md: "md" }}>
                 Action <ChevronDownIcon />
               </Button>
             </MenuButton>
@@ -115,27 +121,34 @@ export default function CardMedia({
               </MenuItem>
             </MenuList>
           </Menu>
-          <Text fontSize="md" color="gray.800" fontWeight={500}>
-            <Flex justify={"space-between"} p="2" borderRadius="lg" align={"center"}>
-              <Box>
-                {mediaCategory} |
-              </Box>
-              <Box px={"2"}>
-                {format(new Date(createdAt), "dd MMM yyyy")} | {timeAgo} |
-              </Box>
-              <Box>
-                {statusBadge}
-              </Box>
-            </Flex>
-          </Text>
+
+          <Flex
+            wrap="wrap"
+            gap={2}
+            justify={{ base: "center", md: "flex-end" }}
+            align="center"
+            fontSize={{ base: "sm", md: "md" }}
+            color="gray.800"
+            fontWeight={500}
+          >
+            <Box>{mediaCategory} |</Box>
+            <Box>{format(new Date(createdAt), "dd MMM yyyy")} | {timeAgo} |</Box>
+            <Box>{statusBadge}</Box>
+          </Flex>
         </Flex>
       </CardBody>
-      <Box align={"center"}>
-        <Text fontWeight={600} fontSize="30px" pb="5" >
+
+      <Box textAlign="center">
+        <Text
+          fontWeight={600}
+          fontSize={{ base: "xl", md: "2xl", lg: "30px" }}
+          pb="5"
+        >
           {mediaTitle}
         </Text>
       </Box>
-      <Box position="relative" width="100%" paddingTop="28%" mb="4">
+
+      <Box position="relative" width="100%" paddingTop="56.25%" mb="4">
         <Image
           position="absolute"
           top="0"
@@ -145,20 +158,22 @@ export default function CardMedia({
           src={mediaAsset}
           alt={mediaTitle}
           borderRadius="lg"
-          objectFit="contain"
+          objectFit="cover"
           filter={mediaStatus === "Published" ? "none" : "grayscale(100%)"}
         />
       </Box>
+
       <Box
         fontWeight={400}
-        fontSize="20px"
+        fontSize={{ base: "md", md: "lg", lg: "20px" }}
         pb="8"
+        px={{ base: 2, md: 4 }}
         dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
       />
 
-      <CardFooter p="0">
-      </CardFooter>
+      <CardFooter p="0" />
       {isOpenAlert && <SweetAlert alert={alert} handleDelete={handleDelete} />}
     </Card>
+
   );
 }
