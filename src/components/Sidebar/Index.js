@@ -66,17 +66,20 @@ export default function Sidebar({ children }) {
               { href: "/admin/article", label: "Article", icon: "/icons/article.png" },
               { href: "/admin/category", label: "Category", icon: "/icons/category.png" },
               { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
+              { href: "/admin/preview", label: "Preview", icon: "/icons/preview.png" },
               { href: "/admin/user", label: "User", icon: "/icons/user.png" },
               { href: "/admin/history", label: "History", icon: "/icons/history.png" },
             ],
             "Admin": [
               {href: "/admin/article", label: "Article", icon: "/icons/article.png" },
               { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
+              { href: "/admin/preview", label: "Preview", icon: "/icons/media.png" },
               { href: "/admin/history", label: "History", icon: "/icons/history.png" },
             ],
             "Copywriter": [
               {href: "/admin/article", label: "Article", icon: "/icons/article.png" },
               { href: "/admin/media", label: "Media", icon: "/icons/media.png" },
+              { href: "/admin/preview", label: "Preview", icon: "/icons/preview.png" },
             ],
           };
 
@@ -179,7 +182,9 @@ export default function Sidebar({ children }) {
                 </Stack>
               </Box>
             </Stack>
-            <UserProfile user={currentUser} isCollapsed={isCollapsed} />
+            <Box align={"center"} justifyItems="center" w="100%">
+              <UserProfile user={currentUser} isCollapsed={isCollapsed} />
+            </Box>
           </Flex>
         </Flex>
         {/* End Sidebar Desktop */}

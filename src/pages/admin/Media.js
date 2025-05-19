@@ -1,22 +1,31 @@
-import CardMedia from "@/components/CardMedia";
-import { SearchIcon } from "@chakra-ui/icons";
 import {
     Box,
     Divider,
     Heading,
     HStack,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    SimpleGrid,
-    VStack,
     useToast,
+    Grid,
+    Image,
+    Button,
+    useDisclosure,
+    VStack,
+    SimpleGrid,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    ModalFooter,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { fetchWrapper } from "../../../helpers";
+import { userService } from "../../../services";
+import { FaPlus } from "react-icons/fa";
 
 export default function Media() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const router = useRouter();
     const [medias, setMedias] = useState([]);
     const [filterText, setFilterText] = useState("");
@@ -60,76 +69,96 @@ export default function Media() {
         })
     }
 
-    const getCategoryNameByUuid = useCallback((uuid) => {
-    const category = categoriesData.find((cat) => cat.uuid === uuid);
-    return category ? category.category : "Unknown";
-    }, [categoriesData]);
-
-
-    // Filter berdasarkan title (case-insensitive)
-    const filteredMedia = useMemo(() => {
-        return medias.filter((media) =>
-            media.title.toLowerCase().includes(filterText.toLowerCase())
-        );
-    }, [filterText, medias]);
-
     return (
         <VStack p={{ base: "4", xl: "8" }} align="stretch" minH="100vh" gap="5" spacing={4}>
             <SimpleGrid m="2" columns={{ base: "1", lg: "2" }} gap="4" w="100%">
                 <Heading fontSize={{ base: "lg", lg: "2xl" }} fontWeight="500" textAlign={{ base: "center", lg: "left" }}>
-                    Media Preview (Search Article From Title)
+                    Media Storage
                 </Heading>
+                <HStack justifyContent={{ base: "center", lg: "flex-end" }}>
+                    {(userService?.userValue?.role === "Super Admin" ||
+                        userService?.userValue?.role === "Admin" ||
+                        userService?.userValue?.role === "Media") && (
+                            <Button
+                                leftIcon={<FaPlus />}
+                                size={{ base: "sm", lg: "md" }}
+                                variant="solid"
+                                bg={"#CB1517"}
+                                color={'white'}
+                                rounded="xl"
+                                p="2"
+                                // onClick={() => {
+                                //     router.push(
+                                //         `/admin/media`
+                                //     );
+                                // }}
+                                onClick={onOpen}
+                                _hover={{
+                                    bg: '#a41a1c'
+                                }}
+                            >
+                                ADD IMAGE
+                            </Button>
+                        )}
+                    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay />
+                        <ModalContent>
+                            <ModalHeader>Add The Assets</ModalHeader>
+                            <ModalCloseButton />
+
+                            <ModalBody pb={6}>
+                                <HStack>
+                                    <Box
+                                        rounded={"lg"}
+                                        bg={"white"}
+                                        boxShadow={"lg"}
+                                        p={{ base: 4, xl: 6 }}
+                                        w="100%"
+                                    >
+                                        <SimpleGrid columns={{ base: "1", md: "1" }} justify="space-between" gap="4">
+                                            <HStack gap={2} maxW={{ base: "100%", md: "100%" }} p="2" borderRadius="md">
+                                               
+                                            </HStack>
+                                        </SimpleGrid>
+                                    </Box>
+                                </HStack>
+                            </ModalBody>
+
+                            <ModalFooter>
+                                <Button colorScheme='blue' mr={3}>
+                                    Save
+                                </Button>
+                                <Button onClick={onClose}>Cancel</Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                </HStack>
             </SimpleGrid>
 
-            <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 4, xl: 6 }} w="100%">
-                <SimpleGrid columns={{ base: "1", md: "1" }} justify="space-between" gap="4">
-                    <HStack gap={2} maxW={{ base: "100%", md: "100%" }} p="2" borderRadius="md">
-                        <InputGroup maxW={{ base: "100%", md: "100%" }}>
-                            <InputLeftElement pointerEvents="none">
-                                <SearchIcon color={"gray.800"} />
-                            </InputLeftElement>
-                            <Input
-                                id="search"
-                                type="text"
-                                placeholder="Search title"
-                                bg="whiteAlpha.200"
-                                aria-label="Search Input"
-                                size={{ base: "sm", xl: "md" }}
-                                value={filterText}
-                                onChange={(e) => setFilterText(e.target.value)}
-                            />
-                        </InputGroup>
-                    </HStack>
-                </SimpleGrid>
-
-                <Divider mt="5" mb="5" />
-
-                {filterText.trim() === "" ? (
-                    <Box textAlign="center" py="6" color="gray.500">
-                        Please enter a title to search for articles.
-                    </Box>
-                ) : filteredMedia.length > 0 ? (
-                    filteredMedia.map((data, index) => (
-                        <CardMedia
-                            key={index}
-                            uuid={data.uuid}
-                            mediaAsset={data.assets}
-                            mediaTitle={data.title}
-                            mediaDescription={data.description}
-                            mediaCategory={getCategoryNameByUuid(data.uuid_category)}
-                            createdAt={data.created_at}
-                            updatedAt={data.updated_at}
-                            mediaStatus={data.status}
-                            onEditClicked={() => router.push(`/admin/article-data?page=${data.uuid}`)}
-                        />
-                    ))
-                ) : (
-                    <Box textAlign="center" py="6" color="gray.400">
-                        No article found with that title.
-                    </Box>
-                )}
-
-            </Box>
+            <Grid templateColumns='repeat(4, 1fr)' gap={5}>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+                <Box rounded="lg" bg={"white"} boxShadow="lg" p={{ base: 2, xl: 4 }} w="100%">
+                    <Image w={"auto"} h={"auto"} src='https://bit.ly/dan-abramov' alt='Dan Abramov' />
+                </Box>
+            </Grid>
+            <Divider mt="5" mb="5" />
         </VStack>
     );
 }
